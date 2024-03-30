@@ -1,0 +1,2 @@
+# WbExtensions
+Расширение возможностей WirenBoard
