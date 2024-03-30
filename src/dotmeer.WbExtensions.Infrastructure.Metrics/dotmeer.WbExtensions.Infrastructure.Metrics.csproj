@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="prometheus-net" Version="8.1.0" />
+        <PackageReference Include="prometheus-net.AspNetCore" Version="8.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\dotmeer.WbExtensions.Infrastructure.Metrics.Abstractions\dotmeer.WbExtensions.Infrastructure.Metrics.Abstractions.csproj" />
+    </ItemGroup>
+
+</Project>

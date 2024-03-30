@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\dotmeer.WbExtensions.Application\dotmeer.WbExtensions.Application.csproj" />
+        <ProjectReference Include="..\dotmeer.WbExtensions.Infrastructure.Logging\dotmeer.WbExtensions.Infrastructure.Logging.csproj" />
+        <ProjectReference Include="..\dotmeer.WbExtensions.Infrastructure.Metrics\dotmeer.WbExtensions.Infrastructure.Metrics.csproj" />
+        <ProjectReference Include="..\dotmeer.WbExtensions.Infrastructure.Mqtt\dotmeer.WbExtensions.Infrastructure.Mqtt.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Update="appsettings.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+</Project>
