@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace dotmeer.WbExtensions.Application.Jobs;
 
-public sealed class MqttDevicesControlsMetricsJob
+public sealed class MqttDevicesControlsMetricsJob : IJob
 {
     private readonly ILogger<MqttDevicesControlsMetricsJob> _logger;
 
@@ -29,7 +29,7 @@ public sealed class MqttDevicesControlsMetricsJob
     public Task ExecuteAsync(CancellationToken stoppingToken)
     {
         return _mqttService.SubscribeAsync(
-            new QueueConnection("/devices/+/controls/+", "prometheus"),
+            QueueConnection.WirenBoard("/devices/+/controls/+", "prometheus"),
             (message, ct) =>
             {
                 try

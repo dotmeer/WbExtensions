@@ -1,0 +1,19 @@
+{
+    "profiles": {
+        "WbExtensions": {
+            "commandName": "Project",
+            "launchBrowser": false,
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "MqttSettings__ClientPrefix": "local",
+                "MqttSettings__WB__Host": "",
+                "MqttSettings__WB__Port": "",
+                "MqttSettings__Yandex__Host": "",
+                "MqttSettings__Yandex__Port": "",
+                "MqttSettings__Yandex__Login": "",
+                "MqttSettings__Yandex__Password": ""
+            },
+            "applicationUrl": "http://localhost:8000"
+        }
+    }
+}

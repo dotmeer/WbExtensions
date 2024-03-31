@@ -10,7 +10,8 @@ public static class ApplicationExtensions
         services
             .AddSingleton<LogZigbee2MqttEventsJob>()
             .AddSingleton<MqttDevicesControlsMetricsJob>()
-            .AddSingleton<ParseZigbee2MqttEventsJob>();
+            .AddSingleton<ParseZigbee2MqttEventsJob>()
+            .AddSingleton<BridgeToYandexJob>();
 
         return services;
     }

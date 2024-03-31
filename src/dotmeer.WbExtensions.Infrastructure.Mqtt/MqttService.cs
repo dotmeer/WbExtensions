@@ -1,32 +1,33 @@
-﻿using System;
-using dotmeer.WbExtensions.Infrastructure.Mqtt.Abstractions;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using dotmeer.WbExtensions.Infrastructure.Mqtt.Abstractions;
+using dotmeer.WbExtensions.Infrastructure.Mqtt.Settings;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
 using MQTTnet.Client;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Security.Authentication;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace dotmeer.WbExtensions.Infrastructure.Mqtt;
 
 internal sealed class MqttService : IMqttService, IDisposable
 {
-    private readonly IConfiguration _configuration;
-
     private readonly ILogger<MqttService> _logger;
+
+    private readonly MqttSettings _mqttSettings;
 
     private readonly MqttFactory _mqttFactory;
 
     private readonly IDictionary<string, IMqttClient> _mqttClients;
 
     public MqttService(
-        IConfiguration configuration,
-        ILogger<MqttService> logger)
+        ILogger<MqttService> logger,
+        MqttSettings mqttSettings)
     {
-        _configuration = configuration;
         _logger = logger;
+        _mqttSettings = mqttSettings;
         _mqttFactory = new MqttFactory();
         _mqttClients = new ConcurrentDictionary<string, IMqttClient>();
     }
@@ -40,7 +41,7 @@ internal sealed class MqttService : IMqttService, IDisposable
         {
             mqttClient = _mqttFactory.CreateMqttClient();
 
-            var options = CreateOptions(connection.ClientName);
+            var options = CreateOptions(connection);
 
             mqttClient.ConnectedAsync += _ =>
             {
@@ -74,7 +75,7 @@ internal sealed class MqttService : IMqttService, IDisposable
         {
             mqttClient = _mqttFactory.CreateMqttClient();
 
-            var options = CreateOptions(connection.ClientName);
+            var options = CreateOptions(connection);
 
             mqttClient.ConnectedAsync += _ =>
             {
@@ -107,12 +108,36 @@ internal sealed class MqttService : IMqttService, IDisposable
         }
     }
 
-    private MqttClientOptions CreateOptions(string clientName)
+    private MqttClientOptions CreateOptions(QueueConnection connection)
     {
-        return new MqttClientOptionsBuilder()
-            .WithClientId($"{_configuration["MqttClientPrefix"]}_{clientName}")
-            .WithTcpServer(_configuration["mqtt_host"], 1883)
-            .WithKeepAlivePeriod(TimeSpan.FromSeconds(60))
+        var options = new MqttClientOptionsBuilder()
+            .WithClientId($"{_mqttSettings.ClientPrefix}_{connection.ClientName}");
+
+        switch (connection.MqttServer)
+        {
+            case MqttServer.WirenBoard:
+                options = options
+                    .WithTcpServer(_mqttSettings.Wb.Host, _mqttSettings.Wb.Port);
+                break;
+
+            case MqttServer.Yandex:
+                options = options
+                    .WithTcpServer(_mqttSettings.Yandex.Host, _mqttSettings.Yandex.Port)
+                    .WithTlsOptions(new MqttClientTlsOptions
+                    {
+                        UseTls = true,
+                        SslProtocol = SslProtocols.Tls12,
+                        CertificateValidationHandler = args => true
+                    })
+                    .WithCredentials(_mqttSettings.Yandex.Login, _mqttSettings.Yandex.Password);
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(connection.MqttServer), connection.MqttServer, null);
+        }
+
+        return options
+            .WithKeepAlivePeriod(TimeSpan.FromSeconds(90))
             .WithCleanSession()
             .Build();
     }

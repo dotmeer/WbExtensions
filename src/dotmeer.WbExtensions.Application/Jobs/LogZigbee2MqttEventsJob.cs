@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace dotmeer.WbExtensions.Application.Jobs;
 
-public sealed class LogZigbee2MqttEventsJob
+public sealed class LogZigbee2MqttEventsJob : IJob
 {
     private readonly ILogger<LogZigbee2MqttEventsJob> _logger;
 
@@ -22,7 +22,7 @@ public sealed class LogZigbee2MqttEventsJob
     public Task ExecuteAsync(CancellationToken cancellationToken)
     {
         return _mqttService.SubscribeAsync(
-            new QueueConnection("zigbee2mqtt/+", "test"),
+            QueueConnection.WirenBoard("zigbee2mqtt/+", "test"),
             (message, ct) =>
             {
                 _logger.LogInformation(

@@ -1,11 +1,13 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using dotmeer.WbExtensions.Application;
+using dotmeer.WbExtensions.Application.Jobs;
 using dotmeer.WbExtensions.Infrastructure.Metrics;
 using dotmeer.WbExtensions.Infrastructure.Mqtt;
 using dotmeer.WbExtensions.Service.BackgroundServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
@@ -13,6 +15,13 @@ namespace dotmeer.WbExtensions.Service;
 
 internal sealed class Startup
 {
+    private readonly IConfiguration _configuration;
+
+    public Startup(IConfiguration  configuration)
+    {
+        _configuration = configuration;
+    }
+
     public void ConfigureServices(IServiceCollection services)
     {
         services
@@ -26,7 +35,7 @@ internal sealed class Startup
 
         services
             .SetupMetrics()
-            .SetupMqtt()
+            .SetupMqtt(_configuration)
             .SetupApplication();
 
         services.AddSwaggerGen(options =>
@@ -39,9 +48,10 @@ internal sealed class Startup
 
         services.AddRouting(options => { options.AppendTrailingSlash = true; });
 
-        services.AddHostedService<Zigbee2MqttBackgroundJob>();
-        services.AddHostedService<MqttTopicsMetricsBackgroundJob>();
-        //services.AddHostedService<TestMqttBackgroundJob>();
+        services.AddHostedService<RunJobBackgroundService<ParseZigbee2MqttEventsJob>>();
+        services.AddHostedService<RunJobBackgroundService<MqttDevicesControlsMetricsJob>>();
+        services.AddHostedService<RunJobBackgroundService<BridgeToYandexJob>>();
+        //services.AddHostedService<RunJobBackgroundService<LogZigbee2MqttEventsJob>>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

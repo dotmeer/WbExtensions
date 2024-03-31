@@ -10,7 +10,7 @@ using System;
 
 namespace dotmeer.WbExtensions.Application.Jobs;
 
-public sealed class ParseZigbee2MqttEventsJob
+public sealed class ParseZigbee2MqttEventsJob : IJob
 {
     private readonly ILogger<ParseZigbee2MqttEventsJob> _logger;
 
@@ -34,7 +34,7 @@ public sealed class ParseZigbee2MqttEventsJob
     public Task ExecuteAsync(CancellationToken stoppingToken)
     {
         return _mqttService.SubscribeAsync(
-            new QueueConnection("zigbee2mqtt/+", "zigbee2mqtt_client"),
+            QueueConnection.WirenBoard("zigbee2mqtt/+", "zigbee2mqtt_client"),
             (message, token) => ReceivedMessageHandler(message, stoppingToken),
             stoppingToken);
     }
@@ -79,7 +79,7 @@ public sealed class ParseZigbee2MqttEventsJob
                     if (send && !string.IsNullOrEmpty(topicValue))
                     {
                         await _mqttService.PublishAsync(
-                            new QueueConnection(topic, topic),
+                            QueueConnection.WirenBoard(topic, topic),
                             topicValue,
                             cancellationToken);
 
