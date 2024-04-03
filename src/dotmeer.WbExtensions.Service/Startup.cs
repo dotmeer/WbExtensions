@@ -1,10 +1,10 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using dotmeer.WbExtensions.Application;
-using dotmeer.WbExtensions.Application.Jobs;
+using dotmeer.WbExtensions.Application.MqttHandlers;
 using dotmeer.WbExtensions.Infrastructure.Metrics;
 using dotmeer.WbExtensions.Infrastructure.Mqtt;
-using dotmeer.WbExtensions.Service.BackgroundServices;
+using dotmeer.WbExtensions.Infrastructure.Mqtt.Abstractions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -17,7 +17,7 @@ internal sealed class Startup
 {
     private readonly IConfiguration _configuration;
 
-    public Startup(IConfiguration  configuration)
+    public Startup(IConfiguration configuration)
     {
         _configuration = configuration;
     }
@@ -47,11 +47,13 @@ internal sealed class Startup
         });
 
         services.AddRouting(options => { options.AppendTrailingSlash = true; });
-
-        services.AddHostedService<RunJobBackgroundService<ParseZigbee2MqttEventsJob>>();
-        services.AddHostedService<RunJobBackgroundService<MqttDevicesControlsMetricsJob>>();
-        services.AddHostedService<RunJobBackgroundService<BridgeToYandexJob>>();
-        //services.AddHostedService<RunJobBackgroundService<LogZigbee2MqttEventsJob>>();
+        
+        services
+            //.AddMqttHandler<LogZigbee2MqttEventsHandler>(QueueConnection.WirenBoard("zigbee2mqtt/+", "test"))
+            //.AddMqttHandler<BridgeToYandexHandler>(QueueConnection.WirenBoard("/devices/+/controls/+", "wb2yandex"))
+            .AddMqttHandler<MqttDevicesControlsMetricsHandler>(QueueConnection.WirenBoard("/devices/+/controls/+", "prometheus"))
+            .AddMqttHandler<ParseZigbee2MqttEventsHandler>(QueueConnection.WirenBoard("zigbee2mqtt/+", "zigbee2mqtt_client"))
+            ;
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -1,26 +1,22 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using dotmeer.WbExtensions.Infrastructure.Metrics.Abstractions;
 using dotmeer.WbExtensions.Infrastructure.Mqtt.Abstractions;
 
-namespace dotmeer.WbExtensions.Application.Jobs;
+namespace dotmeer.WbExtensions.Application.MqttHandlers;
 
-public sealed class BridgeToYandexJob : IJob
+public sealed class BridgeToYandexHandler : IMqttHandler
 {
     private readonly IMqttService _mqttService;
-
     private readonly IMetricsService _metricsService;
-
     private readonly IDictionary<string, string?> _cachedValues;
-
     private readonly HashSet<string> _allowedDevices;
-
     private readonly HashSet<string> _allowedControls;
 
-    public BridgeToYandexJob(
+    public BridgeToYandexHandler(
         IMqttService mqttService,
         IMetricsService metricsService)
     {
@@ -31,15 +27,7 @@ public sealed class BridgeToYandexJob : IJob
         _allowedControls = InitAllowedControls();
     }
 
-    public async Task ExecuteAsync(CancellationToken cancellationToken)
-    {
-        await _mqttService.SubscribeAsync(
-            QueueConnection.WirenBoard("/devices/+/controls/+", "wb2yandex"),
-            PublishToYandexAsync,
-            cancellationToken);
-    }
-
-    private async Task PublishToYandexAsync(QueueMessage message, CancellationToken cancellationToken)
+    public async Task HandleAsync(QueueMessage message, CancellationToken cancellationToken)
     {
         var topic = message.Topic.Split("/", StringSplitOptions.RemoveEmptyEntries);
         var deviceName = topic[1];

@@ -1,27 +1,24 @@
-﻿using dotmeer.WbExtensions.Infrastructure.Metrics.Abstractions;
+﻿using System.Collections.Concurrent;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using dotmeer.WbExtensions.Infrastructure.Metrics.Abstractions;
 using dotmeer.WbExtensions.Infrastructure.Mqtt.Abstractions;
 using Microsoft.Extensions.Logging;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Text.Json;
-using System.Threading.Tasks;
-using System.Threading;
-using System;
 
-namespace dotmeer.WbExtensions.Application.Jobs;
+namespace dotmeer.WbExtensions.Application.MqttHandlers;
 
-public sealed class ParseZigbee2MqttEventsJob : IJob
+public sealed class ParseZigbee2MqttEventsHandler : IMqttHandler
 {
-    private readonly ILogger<ParseZigbee2MqttEventsJob> _logger;
-
+    private readonly ILogger<ParseZigbee2MqttEventsHandler> _logger;
     private readonly IMetricsService _metricsService;
-
     private readonly IMqttService _mqttService;
-
     private readonly IDictionary<string, string?> _cachedValues;
 
-    public ParseZigbee2MqttEventsJob(
-        ILogger<ParseZigbee2MqttEventsJob> logger,
+    public ParseZigbee2MqttEventsHandler(
+        ILogger<ParseZigbee2MqttEventsHandler> logger,
         IMetricsService metricsService,
         IMqttService mqttService)
     {
@@ -31,17 +28,7 @@ public sealed class ParseZigbee2MqttEventsJob : IJob
         _cachedValues = new ConcurrentDictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
     }
 
-    public Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        return _mqttService.SubscribeAsync(
-            QueueConnection.WirenBoard("zigbee2mqtt/+", "zigbee2mqtt_client"),
-            (message, token) => ReceivedMessageHandler(message, stoppingToken),
-            stoppingToken);
-    }
-
-    private async Task ReceivedMessageHandler(
-        QueueMessage message,
-        CancellationToken cancellationToken)
+    public async Task HandleAsync(QueueMessage message, CancellationToken cancellationToken)
     {
         var sourceTopic = message.Topic.Split("/");
         var friendlyName = sourceTopic[1];
