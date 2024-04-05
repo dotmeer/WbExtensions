@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using WbExtensions.Application.MqttHandlers;
+using WbExtensions.Domain.Mqtt;
 using WbExtensions.Infrastructure.Mqtt.Abstractions;
 
 namespace WbExtensions.Service.BackgroundServices;

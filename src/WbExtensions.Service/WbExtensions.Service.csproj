@@ -11,6 +11,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\WbExtensions.Application\WbExtensions.Application.csproj" />
+        <ProjectReference Include="..\WbExtensions.Domain\WbExtensions.Domain.csproj" />
         <ProjectReference Include="..\WbExtensions.Infrastructure.Logging\WbExtensions.Infrastructure.Logging.csproj" />
         <ProjectReference Include="..\WbExtensions.Infrastructure.Metrics\WbExtensions.Infrastructure.Metrics.csproj" />
         <ProjectReference Include="..\WbExtensions.Infrastructure.Mqtt\WbExtensions.Infrastructure.Mqtt.csproj" />

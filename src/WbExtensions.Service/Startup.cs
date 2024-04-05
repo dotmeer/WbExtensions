@@ -7,9 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using WbExtensions.Application;
 using WbExtensions.Application.MqttHandlers;
+using WbExtensions.Domain.Mqtt;
 using WbExtensions.Infrastructure.Metrics;
 using WbExtensions.Infrastructure.Mqtt;
-using WbExtensions.Infrastructure.Mqtt.Abstractions;
 
 namespace WbExtensions.Service;
 

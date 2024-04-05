@@ -5,8 +5,4 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\WbExtensions.Domain\WbExtensions.Domain.csproj" />
-    </ItemGroup>
-
 </Project>

@@ -8,19 +8,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WbExtensions.Infrastructure.Metrics", "WbExtensions.Infrastructure.Metrics\WbExtensions.Infrastructure.Metrics.csproj", "{CF489E96-2988-4B25-A668-0600CFFB0DA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WbExtensions.Infrastructure.Metrics", "WbExtensions.Infrastructure.Metrics\WbExtensions.Infrastructure.Metrics.csproj", "{CF489E96-2988-4B25-A668-0600CFFB0DA4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WbExtensions.Infrastructure.Metrics.Abstractions", "WbExtensions.Infrastructure.Metrics.Abstractions\WbExtensions.Infrastructure.Metrics.Abstractions.csproj", "{1B927031-E3D6-4C73-B015-A6FC01BBAA78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WbExtensions.Infrastructure.Metrics.Abstractions", "WbExtensions.Infrastructure.Metrics.Abstractions\WbExtensions.Infrastructure.Metrics.Abstractions.csproj", "{1B927031-E3D6-4C73-B015-A6FC01BBAA78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WbExtensions.Infrastructure.Logging", "WbExtensions.Infrastructure.Logging\WbExtensions.Infrastructure.Logging.csproj", "{72F7BD67-5FF4-490F-AC56-F797225F465C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WbExtensions.Infrastructure.Logging", "WbExtensions.Infrastructure.Logging\WbExtensions.Infrastructure.Logging.csproj", "{72F7BD67-5FF4-490F-AC56-F797225F465C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WbExtensions.Infrastructure.Mqtt.Abstractions", "WbExtensions.Infrastructure.Mqtt.Abstractions\WbExtensions.Infrastructure.Mqtt.Abstractions.csproj", "{57131F44-AF03-4F34-8EF2-570B1B0CE4AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WbExtensions.Infrastructure.Mqtt.Abstractions", "WbExtensions.Infrastructure.Mqtt.Abstractions\WbExtensions.Infrastructure.Mqtt.Abstractions.csproj", "{57131F44-AF03-4F34-8EF2-570B1B0CE4AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WbExtensions.Infrastructure.Mqtt", "WbExtensions.Infrastructure.Mqtt\WbExtensions.Infrastructure.Mqtt.csproj", "{1917D25D-B016-45DB-9521-41596A4C9577}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WbExtensions.Infrastructure.Mqtt", "WbExtensions.Infrastructure.Mqtt\WbExtensions.Infrastructure.Mqtt.csproj", "{1917D25D-B016-45DB-9521-41596A4C9577}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WbExtensions.Application", "WbExtensions.Application\WbExtensions.Application.csproj", "{8CD6D8A1-2A92-46CE-8C6C-18831E4596B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WbExtensions.Application", "WbExtensions.Application\WbExtensions.Application.csproj", "{8CD6D8A1-2A92-46CE-8C6C-18831E4596B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WbExtensions.Service", "WbExtensions.Service\WbExtensions.Service.csproj", "{243EACF2-EF79-43AA-89F1-2C4242C32106}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WbExtensions.Service", "WbExtensions.Service\WbExtensions.Service.csproj", "{243EACF2-EF79-43AA-89F1-2C4242C32106}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WbExtensions.Domain", "WbExtensions.Domain\WbExtensions.Domain.csproj", "{43F4162B-167D-45D2-AB68-1279466E2D65}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,6 +58,10 @@ Global
 		{243EACF2-EF79-43AA-89F1-2C4242C32106}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{243EACF2-EF79-43AA-89F1-2C4242C32106}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{243EACF2-EF79-43AA-89F1-2C4242C32106}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43F4162B-167D-45D2-AB68-1279466E2D65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43F4162B-167D-45D2-AB68-1279466E2D65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43F4162B-167D-45D2-AB68-1279466E2D65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43F4162B-167D-45D2-AB68-1279466E2D65}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

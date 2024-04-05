@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Security.Authentication;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
 using MQTTnet.Client;
+using WbExtensions.Domain.Mqtt;
 using WbExtensions.Infrastructure.Mqtt.Abstractions;
 using WbExtensions.Infrastructure.Mqtt.Settings;
 

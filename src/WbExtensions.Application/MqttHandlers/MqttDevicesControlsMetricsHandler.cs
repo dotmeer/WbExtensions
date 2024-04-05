@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using WbExtensions.Domain.Mqtt;
 using WbExtensions.Infrastructure.Metrics.Abstractions;
-using WbExtensions.Infrastructure.Mqtt.Abstractions;
 
 namespace WbExtensions.Application.MqttHandlers;
 
