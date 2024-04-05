@@ -66,7 +66,7 @@ public sealed class ParseZigbee2MqttEventsHandler : IMqttHandler
                     if (send && !string.IsNullOrEmpty(topicValue))
                     {
                         await _mqttService.PublishAsync(
-                            QueueConnection.WirenBoard(topic, topic),
+                            new QueueConnection(topic, topic),
                             topicValue,
                             cancellationToken);
 

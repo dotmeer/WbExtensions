@@ -110,33 +110,9 @@ internal sealed class MqttService : IMqttService, IDisposable
 
     private MqttClientOptions CreateOptions(QueueConnection connection)
     {
-        var options = new MqttClientOptionsBuilder()
-            .WithClientId($"{_mqttSettings.ClientPrefix}_{connection.ClientName}");
-
-        switch (connection.MqttServer)
-        {
-            case MqttServer.WirenBoard:
-                options = options
-                    .WithTcpServer(_mqttSettings.Wb.Host, _mqttSettings.Wb.Port);
-                break;
-
-            case MqttServer.Yandex:
-                options = options
-                    .WithTcpServer(_mqttSettings.Yandex.Host, _mqttSettings.Yandex.Port)
-                    .WithTlsOptions(new MqttClientTlsOptions
-                    {
-                        UseTls = true,
-                        SslProtocol = SslProtocols.Tls12,
-                        CertificateValidationHandler = args => true
-                    })
-                    .WithCredentials(_mqttSettings.Yandex.Login, _mqttSettings.Yandex.Password);
-                break;
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(connection.MqttServer), connection.MqttServer, null);
-        }
-
-        return options
+        return new MqttClientOptionsBuilder()
+            .WithClientId($"{_mqttSettings.ClientPrefix}_{connection.ClientName}")
+            .WithTcpServer(_mqttSettings.Host, _mqttSettings.Port)
             .WithKeepAlivePeriod(TimeSpan.FromSeconds(90))
             .WithCleanSession()
             .Build();

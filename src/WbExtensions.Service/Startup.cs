@@ -49,10 +49,9 @@ internal sealed class Startup
         services.AddRouting(options => { options.AppendTrailingSlash = true; });
         
         services
-            .AddMqttHandler<LogZigbee2MqttEventsHandler>(QueueConnection.WirenBoard("zigbee2mqtt/+", "test"))
-            //.AddMqttHandler<BridgeToYandexHandler>(QueueConnection.WirenBoard("/devices/+/controls/+", "wb2yandex"))
-            //.AddMqttHandler<MqttDevicesControlsMetricsHandler>(QueueConnection.WirenBoard("/devices/+/controls/+", "prometheus"))
-            //.AddMqttHandler<ParseZigbee2MqttEventsHandler>(QueueConnection.WirenBoard("zigbee2mqtt/+", "zigbee2mqtt_client"))
+            //.AddMqttHandler<LogZigbee2MqttEventsHandler>(new QueueConnection("zigbee2mqtt/+", "test"))
+            .AddMqttHandler<MqttDevicesControlsMetricsHandler>(new QueueConnection("/devices/+/controls/+", "prometheus"))
+            .AddMqttHandler<ParseZigbee2MqttEventsHandler>(new QueueConnection("zigbee2mqtt/+", "zigbee2mqtt_client"))
             ;
     }
 
