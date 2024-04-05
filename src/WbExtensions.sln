@@ -24,6 +24,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WbExtensions.Service", "WbE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WbExtensions.Domain", "WbExtensions.Domain\WbExtensions.Domain.csproj", "{43F4162B-167D-45D2-AB68-1279466E2D65}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WbExtensions.Infrastructure", "WbExtensions.Infrastructure\WbExtensions.Infrastructure.csproj", "{CDDB060D-6B2E-412A-BA25-06B067422539}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +64,10 @@ Global
 		{43F4162B-167D-45D2-AB68-1279466E2D65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43F4162B-167D-45D2-AB68-1279466E2D65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43F4162B-167D-45D2-AB68-1279466E2D65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDDB060D-6B2E-412A-BA25-06B067422539}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDDB060D-6B2E-412A-BA25-06B067422539}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDDB060D-6B2E-412A-BA25-06B067422539}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDDB060D-6B2E-412A-BA25-06B067422539}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

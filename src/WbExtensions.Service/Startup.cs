@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using WbExtensions.Application;
 using WbExtensions.Application.MqttHandlers;
 using WbExtensions.Domain.Mqtt;
+using WbExtensions.Infrastructure.Json;
 using WbExtensions.Infrastructure.Metrics;
 using WbExtensions.Infrastructure.Mqtt;
 
@@ -27,11 +28,7 @@ internal sealed class Startup
         services
             .AddControllers()
             .AddControllersAsServices()
-            .AddJsonOptions(_ =>
-            {
-                _.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
-                _.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-            });
+            .AddJsonOptions(_ => _.JsonSerializerOptions.Configure());
 
         services
             .SetupMetrics()

@@ -4,10 +4,7 @@
             "commandName": "Project",
             "launchBrowser": false,
             "environmentVariables": {
-                "ASPNETCORE_ENVIRONMENT": "Development",
-                "MqttSettings__ClientPrefix": "local",
-                "MqttSettings__Host": "",
-                "MqttSettings__Port": ""
+                "ASPNETCORE_ENVIRONMENT": "Development"
             },
             "applicationUrl": "http://localhost:8000"
         }

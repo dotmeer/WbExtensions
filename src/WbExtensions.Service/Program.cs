@@ -18,6 +18,7 @@ public class Program
 
                 configurationBuilder
                     .AddJsonFile("appsettings.json", false, false)
+                    .AddJsonFile("appsettings.local.json", true, false)
                     .AddEnvironmentVariables()
                     .Build();
             })
