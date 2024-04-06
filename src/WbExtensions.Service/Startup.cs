@@ -11,6 +11,9 @@ using WbExtensions.Domain.Mqtt;
 using WbExtensions.Infrastructure.Json;
 using WbExtensions.Infrastructure.Metrics;
 using WbExtensions.Infrastructure.Mqtt;
+using WbExtensions.Infrastructure.Yandex;
+using WbExtensions.Service.Authorization;
+using WbExtensions.Service.Middlewares;
 
 namespace WbExtensions.Service;
 
@@ -30,11 +33,6 @@ internal sealed class Startup
             .AddControllersAsServices()
             .AddJsonOptions(_ => _.JsonSerializerOptions.Configure());
 
-        services
-            .SetupMetrics()
-            .SetupMqtt(_configuration)
-            .SetupApplication();
-
         services.AddSwaggerGen(options =>
         {
             options.SwaggerDoc("v1", new OpenApiInfo { Title = "Default", Version = "v1" });
@@ -45,6 +43,27 @@ internal sealed class Startup
 
         services.AddRouting(options => { options.AppendTrailingSlash = true; });
         
+        services
+            .AddAuthentication()
+            .AddScheme<TokenAuthenticationOptions, TokenAuthenticationHandler>(AuthConstants.SchemeName, _ => { });
+
+        services
+            .AddAuthorization(options =>
+            {
+                options.AddPolicy(AuthConstants.SchemeName, policy =>
+                    policy.RequireClaim(AuthConstants.UserIdClaim));
+            });
+
+        services
+            .AddScoped<LoggingMiddleware>()
+            .AddScoped<ExceptionsMiddleware>();
+
+        services
+            .SetupMetrics()
+            .SetupMqtt(_configuration)
+            .SetupApplication()
+            .SetupYandex(_configuration);
+
         services
             //.AddMqttHandler<LogZigbee2MqttEventsHandler>(new QueueConnection("zigbee2mqtt/+", "test"))
             .AddMqttHandler<MqttDevicesControlsMetricsHandler>(new QueueConnection("/devices/+/controls/+", "prometheus"))
@@ -62,7 +81,13 @@ internal sealed class Startup
             swaggerUiOptions.SwaggerEndpoint("/swagger/v1/swagger.json", "API");
             swaggerUiOptions.DisplayRequestDuration();
         });
-        app.UseRouting();
+
+        app.UseMiddleware<LoggingMiddleware>()
+            .UseMiddleware<ExceptionsMiddleware>();
+
+        app.UseRouting()
+            .UseAuthentication()
+            .UseAuthorization();
 
         app.UseEndpoints(endpoints =>
         {

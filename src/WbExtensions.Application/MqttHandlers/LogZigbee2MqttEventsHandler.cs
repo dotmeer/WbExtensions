@@ -16,8 +16,7 @@ public sealed class LogZigbee2MqttEventsHandler : IMqttHandler
 
     public Task HandleAsync(QueueMessage message, CancellationToken cancellationToken)
     {
-        _logger.LogInformation(
-            $"{message.Topic}: {message.Payload}");
+        _logger.LogInformation("{Topic}: {Payload}", message.Topic, message.Payload);
 
         return Task.CompletedTask;
     }

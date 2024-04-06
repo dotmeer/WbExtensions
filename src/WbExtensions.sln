@@ -26,6 +26,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WbExtensions.Domain", "WbEx
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WbExtensions.Infrastructure", "WbExtensions.Infrastructure\WbExtensions.Infrastructure.csproj", "{CDDB060D-6B2E-412A-BA25-06B067422539}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WbExtensions.Infrastructure.Yandex", "WbExtensions.Infrastructure.Yandex\WbExtensions.Infrastructure.Yandex.csproj", "{65778298-18F7-4B80-80CC-6D1BAAC1C2A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WbExtensions.Infrastructure.Yandex.Abstractions", "WbExtensions.Infrastructure.Yandex.Abstractions\WbExtensions.Infrastructure.Yandex.Abstractions.csproj", "{CFD80FA3-49C2-453F-8F1C-15EB4CCF75DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +72,14 @@ Global
 		{CDDB060D-6B2E-412A-BA25-06B067422539}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDDB060D-6B2E-412A-BA25-06B067422539}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDDB060D-6B2E-412A-BA25-06B067422539}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65778298-18F7-4B80-80CC-6D1BAAC1C2A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65778298-18F7-4B80-80CC-6D1BAAC1C2A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65778298-18F7-4B80-80CC-6D1BAAC1C2A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65778298-18F7-4B80-80CC-6D1BAAC1C2A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFD80FA3-49C2-453F-8F1C-15EB4CCF75DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFD80FA3-49C2-453F-8F1C-15EB4CCF75DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFD80FA3-49C2-453F-8F1C-15EB4CCF75DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFD80FA3-49C2-453F-8F1C-15EB4CCF75DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
