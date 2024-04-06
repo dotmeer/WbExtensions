@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,11 +47,10 @@ internal sealed class Startup
             .AddScheme<TokenAuthenticationOptions, TokenAuthenticationHandler>(AuthConstants.SchemeName, _ => { });
 
         services
-            .AddAuthorization(options =>
-            {
-                options.AddPolicy(AuthConstants.SchemeName, policy =>
-                    policy.RequireClaim(AuthConstants.UserIdClaim));
-            });
+            .AddAuthorizationBuilder()
+            .AddPolicy(
+                AuthConstants.SchemeName,
+                policy => policy.RequireClaim(AuthConstants.UserIdClaim));
 
         services
             .AddScoped<LoggingMiddleware>()
@@ -68,6 +65,7 @@ internal sealed class Startup
 
         services
             //.AddMqttHandler<LogZigbee2MqttEventsHandler>(new QueueConnection("zigbee2mqtt/+", "test"))
+            .AddMqttHandler<SaveTelemetryHandler>(new QueueConnection("/devices/+/controls/+", "db"))
             .AddMqttHandler<MqttDevicesControlsMetricsHandler>(new QueueConnection("/devices/+/controls/+", "prometheus"))
             .AddMqttHandler<ParseZigbee2MqttEventsHandler>(new QueueConnection("zigbee2mqtt/+", "zigbee2mqtt_client"))
             ;
@@ -87,9 +85,9 @@ internal sealed class Startup
         app.UseMiddleware<LoggingMiddleware>()
             .UseMiddleware<ExceptionsMiddleware>();
 
-        app.UseRouting()
-            .UseAuthentication()
-            .UseAuthorization();
+        app.UseRouting();
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         app.UseEndpoints(endpoints =>
         {

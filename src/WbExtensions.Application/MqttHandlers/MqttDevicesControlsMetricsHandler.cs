@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using WbExtensions.Application.Helpers;
 using WbExtensions.Domain.Mqtt;
 using WbExtensions.Infrastructure.Metrics.Abstractions;
 
@@ -25,10 +26,8 @@ public sealed class MqttDevicesControlsMetricsHandler : IMqttHandler
     {
         try
         {
-            var topic = message.Topic.Split("/", StringSplitOptions.RemoveEmptyEntries);
-            var deviceName = topic[1];
-            var controlName = topic[3];
-
+            var (deviceName, controlName) = TopicNameHelper.ParseDeviceControlTopic(message.Topic);
+            
             if (double.TryParse(message.Payload, out var value))
             {
                 _metricsService.SetGauge(

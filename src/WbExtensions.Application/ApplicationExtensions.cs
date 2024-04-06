@@ -12,6 +12,7 @@ public static class ApplicationExtensions
             .AddSingleton<LogZigbee2MqttEventsHandler>()
             .AddSingleton<MqttDevicesControlsMetricsHandler>()
             .AddSingleton<ParseZigbee2MqttEventsHandler>()
+            .AddSingleton<SaveTelemetryHandler>()
             .AddSingleton<IDevicesRepository, DevicesRepository>();
 
         return services;

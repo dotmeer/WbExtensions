@@ -12,6 +12,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\WbExtensions.Domain\WbExtensions.Domain.csproj" />
+        <ProjectReference Include="..\WbExtensions.Infrastructure.Database.Abstractions\WbExtensions.Infrastructure.Database.Abstractions.csproj" />
         <ProjectReference Include="..\WbExtensions.Infrastructure.Metrics.Abstractions\WbExtensions.Infrastructure.Metrics.Abstractions.csproj" />
         <ProjectReference Include="..\WbExtensions.Infrastructure.Mqtt.Abstractions\WbExtensions.Infrastructure.Mqtt.Abstractions.csproj" />
     </ItemGroup>

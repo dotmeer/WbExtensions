@@ -17,8 +17,7 @@ public sealed class DevicesController : ControllerBase
 {
     private readonly IDevicesRepository _devicesRepository;
 
-    public DevicesController(
-        IDevicesRepository devicesRepository)
+    public DevicesController(IDevicesRepository devicesRepository)
     {
         _devicesRepository = devicesRepository;
     }

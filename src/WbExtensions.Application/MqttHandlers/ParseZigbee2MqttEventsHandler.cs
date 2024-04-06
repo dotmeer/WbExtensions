@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using WbExtensions.Application.Helpers;
 using WbExtensions.Domain.Mqtt;
 using WbExtensions.Infrastructure.Metrics.Abstractions;
 using WbExtensions.Infrastructure.Mqtt.Abstractions;
@@ -31,8 +32,7 @@ public sealed class ParseZigbee2MqttEventsHandler : IMqttHandler
 
     public async Task HandleAsync(QueueMessage message, CancellationToken cancellationToken)
     {
-        var sourceTopic = message.Topic.Split("/");
-        var friendlyName = sourceTopic[1];
+        var friendlyName = TopicNameHelper.GetZigbee2MqttDevice(message.Topic);
         var deviceMessagePayload = message.Payload;
 
         var zigbeeMessage = JsonSerializer.Deserialize<IDictionary<string, object>>(deviceMessagePayload);

@@ -6,8 +6,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Dapper" Version="2.1.35" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
         <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\WbExtensions.Domain\WbExtensions.Domain.csproj" />
+      <ProjectReference Include="..\WbExtensions.Infrastructure.Database.Abstractions\WbExtensions.Infrastructure.Database.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>
