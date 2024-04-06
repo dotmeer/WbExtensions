@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using WbExtensions.Application.MqttHandlers;
 using WbExtensions.Domain.Mqtt;
 using WbExtensions.Infrastructure.Mqtt.Abstractions;
@@ -17,7 +18,8 @@ internal static class ServiceCollectionExtensions
             new RunMqttHandlerBackgroundService<THandler>(
                 serviceProvider.GetService<IMqttService>()!,
                 serviceProvider.GetService<THandler>()!,
-                connection));
+                connection,
+                serviceProvider.GetService<ILoggerFactory>()!));
 
         return services;
     }

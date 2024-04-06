@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WbExtensions.Infrastructure
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WbExtensions.Infrastructure.Yandex.Abstractions", "WbExtensions.Infrastructure.Yandex.Abstractions\WbExtensions.Infrastructure.Yandex.Abstractions.csproj", "{CFD80FA3-49C2-453F-8F1C-15EB4CCF75DB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WbExtensions.Infrastructure.Database", "WbExtensions.Infrastructure.Database\WbExtensions.Infrastructure.Database.csproj", "{503AB136-44D2-41B6-BDDD-19630C77AFFE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,6 +82,10 @@ Global
 		{CFD80FA3-49C2-453F-8F1C-15EB4CCF75DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFD80FA3-49C2-453F-8F1C-15EB4CCF75DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFD80FA3-49C2-453F-8F1C-15EB4CCF75DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{503AB136-44D2-41B6-BDDD-19630C77AFFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{503AB136-44D2-41B6-BDDD-19630C77AFFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{503AB136-44D2-41B6-BDDD-19630C77AFFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{503AB136-44D2-41B6-BDDD-19630C77AFFE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
