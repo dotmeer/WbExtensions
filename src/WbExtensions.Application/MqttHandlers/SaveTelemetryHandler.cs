@@ -33,7 +33,7 @@ public sealed class SaveTelemetryHandler : IMqttHandler
 
             var (device, control) = TopicNameHelper.ParseDeviceControlTopic(message.Topic);
 
-            await _telemetryRepository.AddAsync(
+            await _telemetryRepository.UpsertAsync(
                 new Telemetry(device, control, message.Payload, DateTime.UtcNow),
                 cancellationToken);
         }

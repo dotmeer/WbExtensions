@@ -32,62 +32,66 @@ public sealed class ParseZigbee2MqttEventsHandler : IMqttHandler
 
     public async Task HandleAsync(QueueMessage message, CancellationToken cancellationToken)
     {
-        var friendlyName = TopicNameHelper.GetZigbee2MqttDevice(message.Topic);
-        var deviceMessagePayload = message.Payload;
-
-        var zigbeeMessage = JsonSerializer.Deserialize<IDictionary<string, object>>(deviceMessagePayload);
-
-        if (zigbeeMessage is not null)
+        try
         {
-            foreach (var value in zigbeeMessage)
-            {
-                var topic = $"external/{friendlyName}/{value.Key}";
-                try
-                {
-                    var topicValue = value.Value.ToString();
-                    var send = true;
+            var friendlyName = TopicNameHelper.GetZigbee2MqttDevice(message.Topic);
+            var deviceMessagePayload = message.Payload;
 
-                    if (_cachedValues.TryGetValue(topic, out var cachedValue))
+            var zigbeeMessage = JsonSerializer.Deserialize<IDictionary<string, object>>(deviceMessagePayload);
+
+            if (zigbeeMessage is not null)
+            {
+                foreach (var value in zigbeeMessage)
+                {
+                    var topic = $"external/{friendlyName}/{value.Key}";
+                    try
                     {
-                        if (cachedValue == topicValue)
+                        var topicValue = value.Value.ToString();
+                        var send = true;
+
+                        if (_cachedValues.TryGetValue(topic, out var cachedValue))
                         {
-                            send = false;
+                            if (cachedValue == topicValue)
+                            {
+                                send = false;
+                            }
+                            else
+                            {
+                                send = true;
+                                _cachedValues[topic] = topicValue;
+                            }
                         }
                         else
                         {
-                            send = true;
-                            _cachedValues[topic] = topicValue;
+                            _cachedValues.Add(topic, topicValue);
+                        }
+
+                        if (send && !string.IsNullOrEmpty(topicValue))
+                        {
+                            await _mqttService.PublishAsync(
+                                new QueueConnection(topic, topic),
+                                topicValue,
+                                cancellationToken);
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        _cachedValues.Add(topic, topicValue);
-                    }
-
-                    if (send && !string.IsNullOrEmpty(topicValue))
-                    {
-                        await _mqttService.PublishAsync(
-                            new QueueConnection(topic, topic),
-                            topicValue,
-                            cancellationToken);
-
-                        _logger.LogInformation("Topic '{Topic}' with value {Value}",
-                            topic, topicValue);
+                        _logger.LogError(ex, "Error while processing topic {Topic}", topic);
                     }
                 }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error while processing topic {Topic}", topic);
-                }
+
+                _metricsService.IncrementCounter(
+                    "zigbee2mqtt_read",
+                    new Dictionary<string, string>
+                    {
+                        ["friendly_name"] = friendlyName
+                    },
+                    "Message from zigbee2mqtt was read");
             }
-
-            _metricsService.IncrementCounter(
-                "zigbee2mqtt_read",
-                new Dictionary<string, string>
-                {
-                    ["friendly_name"] = friendlyName
-                },
-                "Message from zigbee2mqtt was read");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while reading zigbee2mqtt");
         }
     }
 }

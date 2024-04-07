@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
 using Dapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WbExtensions.Domain;
 using WbExtensions.Infrastructure.Database.Abstractions;
 using WbExtensions.Infrastructure.Database.Repositories;
+using WbExtensions.Infrastructure.Database.Settings;
 using WbExtensions.Infrastructure.Database.TableFactories;
 using WbExtensions.Infrastructure.Database.TypeHandlers;
 
@@ -12,14 +14,18 @@ namespace WbExtensions.Infrastructure.Database;
 
 public static class InfrastructureDatabaseExtensions
 {
-    public static IServiceCollection SetupDatabase(this IServiceCollection services)
+    public static IServiceCollection SetupDatabase(this IServiceCollection services, IConfiguration configuration)
     {
         SqlMapper.RemoveTypeMap(typeof(DateTime));
         SqlMapper.AddTypeHandler(new DateTimeHandler());
 
+        var databaseSettings = configuration.GetSection("Database").Get<DatabaseSettings>()
+                               ?? throw new ArgumentNullException(nameof(DatabaseSettings));
+
         var connectionString = GetConnectionString();
 
         services
+            .AddSingleton(databaseSettings)
             .AddSingleton(new DbConnectionFactory(connectionString))
             .AddSingleton<ITableFactory<Telemetry>, TelemetryTableFactory>()
             .AddSingleton<ITelemetryRepository, TelemetryRepository>();

@@ -7,7 +7,7 @@ namespace WbExtensions.Infrastructure.Database.Abstractions;
 
 public interface ITelemetryRepository
 {
-    Task AddAsync(Telemetry model, CancellationToken cancellationToken);
+    Task UpsertAsync(Telemetry model, CancellationToken cancellationToken);
 
     Task<IReadOnlyCollection<Telemetry>> GetAsync(CancellationToken cancellationToken);
 }

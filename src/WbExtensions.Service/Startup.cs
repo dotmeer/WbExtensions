@@ -61,7 +61,7 @@ internal sealed class Startup
             .SetupMqtt(_configuration)
             .SetupApplication()
             .SetupYandex(_configuration)
-            .SetupDatabase();
+            .SetupDatabase(_configuration);
 
         services
             //.AddMqttHandler<LogZigbee2MqttEventsHandler>(new QueueConnection("zigbee2mqtt/+", "test"))
