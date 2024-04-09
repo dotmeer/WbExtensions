@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using WbExtensions.Application.Interfaces.Database;
 using WbExtensions.Domain;
 using WbExtensions.Infrastructure.Database.Settings;
-using WbExtensions.Infrastructure.Database.TableFactories;
 
 namespace WbExtensions.Infrastructure.Database.Repositories;
 
@@ -23,12 +22,10 @@ internal sealed class TelemetryRepository : ITelemetryRepository, IAsyncDisposab
     private readonly Task _upsertTask;
 
     public TelemetryRepository(
-        ITableFactory<Telemetry> tableFactory,
         DbConnectionFactory dbConnectionFactory,
         ILogger<TelemetryRepository> logger,
         DatabaseSettings databaseSettings)
     {
-        tableFactory.Migrate();
         _dbConnectionFactory = dbConnectionFactory;
         _logger = logger;
         _databaseSettings = databaseSettings;

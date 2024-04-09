@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using WbExtensions.Application.Interfaces.Mqtt;
 using WbExtensions.Domain.Mqtt;
 
 namespace WbExtensions.Application.MqttHandlers;

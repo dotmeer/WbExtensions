@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WbExtensions.Application.Interfaces.Mqtt;
-using WbExtensions.Application.MqttHandlers;
 using WbExtensions.Domain.Mqtt;
 using WbExtensions.Service.BackgroundServices;
 

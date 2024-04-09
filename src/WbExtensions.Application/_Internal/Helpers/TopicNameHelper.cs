@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WbExtensions.Application.Helpers;
+namespace WbExtensions.Application._Internal.Helpers;
 
 internal static class TopicNameHelper
 {

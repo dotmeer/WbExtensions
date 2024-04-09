@@ -2,8 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using WbExtensions.Application.Helpers;
+using WbExtensions.Application._Internal.Helpers;
 using WbExtensions.Application.Interfaces.Database;
+using WbExtensions.Application.Interfaces.Mqtt;
 using WbExtensions.Domain;
 using WbExtensions.Domain.Mqtt;
 
@@ -15,7 +16,7 @@ public sealed class SaveTelemetryHandler : IMqttHandler
     private readonly ILogger<SaveTelemetryHandler> _logger;
 
     public SaveTelemetryHandler(
-        ITelemetryRepository telemetryRepository, 
+        ITelemetryRepository telemetryRepository,
         ILogger<SaveTelemetryHandler> logger)
     {
         _telemetryRepository = telemetryRepository;
@@ -40,8 +41,8 @@ public sealed class SaveTelemetryHandler : IMqttHandler
         catch (Exception ex)
         {
             _logger.LogError(
-                ex, 
-                "Error while saving telemetry for topic '{Topic}' with payload '{Payload}'", 
+                ex,
+                "Error while saving telemetry for topic '{Topic}' with payload '{Payload}'",
                 message.Topic,
                 message.Payload);
         }

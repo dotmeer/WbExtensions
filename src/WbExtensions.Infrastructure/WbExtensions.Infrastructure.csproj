@@ -26,4 +26,8 @@
       <ProjectReference Include="..\WbExtensions.Domain\WbExtensions.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Database\Migrations\" />
+    </ItemGroup>
+
 </Project>

@@ -5,7 +5,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using WbExtensions.Application.Helpers;
+using WbExtensions.Application._Internal.Helpers;
 using WbExtensions.Application.Interfaces.Metrics;
 using WbExtensions.Application.Interfaces.Mqtt;
 using WbExtensions.Domain.Mqtt;

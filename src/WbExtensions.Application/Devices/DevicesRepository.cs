@@ -95,7 +95,7 @@ internal sealed class DevicesRepository : IDevicesRepository
             CustomData = new Dictionary<string, object>(0),
             Capabilities = new List<Capability>
             {
-                new Capability(
+                new(
                     CapabilityTypes.OnOff,
                     true,
                     false,
@@ -107,7 +107,7 @@ internal sealed class DevicesRepository : IDevicesRepository
             },
             Properties = new List<Property>
             {
-                new Property(
+                new(
                     PropertyTypes.Float,
                     true,
                     false,

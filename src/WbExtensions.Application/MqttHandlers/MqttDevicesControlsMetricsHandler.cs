@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using WbExtensions.Application.Helpers;
+using WbExtensions.Application._Internal.Helpers;
 using WbExtensions.Application.Interfaces.Metrics;
+using WbExtensions.Application.Interfaces.Mqtt;
 using WbExtensions.Domain.Mqtt;
 
 namespace WbExtensions.Application.MqttHandlers;
@@ -15,7 +16,7 @@ public sealed class MqttDevicesControlsMetricsHandler : IMqttHandler
     private readonly IMetricsService _metricsService;
 
     public MqttDevicesControlsMetricsHandler(
-        ILogger<MqttDevicesControlsMetricsHandler> logger, 
+        ILogger<MqttDevicesControlsMetricsHandler> logger,
         IMetricsService metricsService)
     {
         _logger = logger;
@@ -27,7 +28,7 @@ public sealed class MqttDevicesControlsMetricsHandler : IMqttHandler
         try
         {
             var (deviceName, controlName) = TopicNameHelper.ParseDeviceControlTopic(message.Topic);
-            
+
             if (double.TryParse(message.Payload, out var value))
             {
                 _metricsService.SetGauge(

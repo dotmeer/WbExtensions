@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using WbExtensions.Domain.Mqtt;
 
-namespace WbExtensions.Application.MqttHandlers;
+namespace WbExtensions.Application.Interfaces.Mqtt;
 
 public interface IMqttHandler
 {

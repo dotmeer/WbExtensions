@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using WbExtensions.Application.Interfaces.Mqtt;
-using WbExtensions.Application.MqttHandlers;
 using WbExtensions.Domain.Mqtt;
 
 namespace WbExtensions.Service.BackgroundServices;
