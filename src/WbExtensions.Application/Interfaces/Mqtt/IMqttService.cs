@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WbExtensions.Domain.Mqtt;
 
-namespace WbExtensions.Infrastructure.Mqtt.Abstractions;
+namespace WbExtensions.Application.Interfaces.Mqtt;
 
 public interface IMqttService
 {

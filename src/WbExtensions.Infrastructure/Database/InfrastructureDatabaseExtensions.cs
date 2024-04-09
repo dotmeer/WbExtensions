@@ -3,8 +3,8 @@ using System.IO;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WbExtensions.Application.Interfaces.Database;
 using WbExtensions.Domain;
-using WbExtensions.Infrastructure.Database.Abstractions;
 using WbExtensions.Infrastructure.Database.Repositories;
 using WbExtensions.Infrastructure.Database.Settings;
 using WbExtensions.Infrastructure.Database.TableFactories;
@@ -12,7 +12,7 @@ using WbExtensions.Infrastructure.Database.TypeHandlers;
 
 namespace WbExtensions.Infrastructure.Database;
 
-public static class InfrastructureDatabaseExtensions
+internal static class InfrastructureDatabaseExtensions
 {
     public static IServiceCollection SetupDatabase(this IServiceCollection services, IConfiguration configuration)
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
-using WbExtensions.Infrastructure.Metrics.Abstractions;
+using WbExtensions.Application.Interfaces.Metrics;
 
 namespace WbExtensions.Infrastructure.Logging;
 

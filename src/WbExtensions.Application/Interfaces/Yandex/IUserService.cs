@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-using System.Threading;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
-namespace WbExtensions.Infrastructure.Yandex.Abstractions;
+namespace WbExtensions.Application.Interfaces.Yandex;
 
 public interface IUserService
 {

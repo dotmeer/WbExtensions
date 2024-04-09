@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WbExtensions.Domain;
 
-namespace WbExtensions.Infrastructure.Database.Abstractions;
+namespace WbExtensions.Application.Interfaces.Database;
 
 public interface ITelemetryRepository
 {

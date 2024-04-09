@@ -3,15 +3,15 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Prometheus;
-using WbExtensions.Infrastructure.Metrics.Abstractions;
+using WbExtensions.Application.Interfaces.Metrics;
 
 namespace WbExtensions.Infrastructure.Metrics;
 
 internal sealed class MetricsService : IMetricsService
 {
-    private readonly IDictionary<string, Counter> _counters = new ConcurrentDictionary<string, Counter>();
+    private readonly ConcurrentDictionary<string, Counter> _counters = new();
 
-    private readonly IDictionary<string, Gauge> _gauges = new ConcurrentDictionary<string, Gauge>();
+    private readonly ConcurrentDictionary<string, Gauge> _gauges = new();
 
     public void IncrementCounter(
         string name,

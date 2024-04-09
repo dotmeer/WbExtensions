@@ -7,7 +7,7 @@ namespace WbExtensions.Infrastructure.Logging;
 
 public static class InfrastructureLoggingExtensions
 {
-    public static ILoggingBuilder AddMetricsLogger(
+    private static ILoggingBuilder AddMetricsLogger(
         this ILoggingBuilder builder)
     {
         builder.Services.TryAddEnumerable(

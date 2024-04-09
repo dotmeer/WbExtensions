@@ -4,8 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using WbExtensions.Application.Helpers;
+using WbExtensions.Application.Interfaces.Metrics;
 using WbExtensions.Domain.Mqtt;
-using WbExtensions.Infrastructure.Metrics.Abstractions;
 
 namespace WbExtensions.Application.MqttHandlers;
 

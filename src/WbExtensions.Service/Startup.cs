@@ -6,11 +6,9 @@ using Microsoft.OpenApi.Models;
 using WbExtensions.Application;
 using WbExtensions.Application.MqttHandlers;
 using WbExtensions.Domain.Mqtt;
-using WbExtensions.Infrastructure.Database;
+using WbExtensions.Infrastructure;
 using WbExtensions.Infrastructure.Json;
 using WbExtensions.Infrastructure.Metrics;
-using WbExtensions.Infrastructure.Mqtt;
-using WbExtensions.Infrastructure.Yandex;
 using WbExtensions.Service.Authorization;
 using WbExtensions.Service.Middlewares;
 
@@ -57,11 +55,8 @@ internal sealed class Startup
             .AddScoped<ExceptionsMiddleware>();
 
         services
-            .SetupMetrics()
-            .SetupMqtt(_configuration)
-            .SetupApplication()
-            .SetupYandex(_configuration)
-            .SetupDatabase(_configuration);
+            .SetupInfrastructure(_configuration)
+            .SetupApplication();
 
         services
             //.AddMqttHandler<LogZigbee2MqttEventsHandler>(new QueueConnection("zigbee2mqtt/+", "test"))

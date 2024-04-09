@@ -6,8 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
 using Microsoft.Extensions.Logging;
+using WbExtensions.Application.Interfaces.Database;
 using WbExtensions.Domain;
-using WbExtensions.Infrastructure.Database.Abstractions;
 using WbExtensions.Infrastructure.Database.Settings;
 using WbExtensions.Infrastructure.Database.TableFactories;
 
@@ -39,8 +39,10 @@ internal sealed class TelemetryRepository : ITelemetryRepository, IAsyncDisposab
 
     public Task UpsertAsync(Telemetry model, CancellationToken cancellationToken)
     {
-        if(_databaseSettings.StorableDevices.Contains(model.Device, StringComparer.OrdinalIgnoreCase)
-           && _databaseSettings.StorableControls.Contains(model.Control, StringComparer.OrdinalIgnoreCase))
+        if ((!_databaseSettings.StorableDevices.Any()
+             || _databaseSettings.StorableDevices.Contains(model.Device, StringComparer.OrdinalIgnoreCase))
+            && (!_databaseSettings.StorableControls.Any()
+                || _databaseSettings.StorableControls.Contains(model.Control, StringComparer.OrdinalIgnoreCase)))
         {
             _upsertQueue.Enqueue(model);
         }
@@ -64,6 +66,7 @@ internal sealed class TelemetryRepository : ITelemetryRepository, IAsyncDisposab
     public async ValueTask DisposeAsync()
     {
         await _cancellationTokenSource.CancelAsync();
+        await _upsertTask;
         _cancellationTokenSource.Dispose();
     }
 

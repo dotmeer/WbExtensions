@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WbExtensions.Infrastructure.Metrics.Abstractions;
+namespace WbExtensions.Application.Interfaces.Metrics;
 
 public interface IMetricsService
 {

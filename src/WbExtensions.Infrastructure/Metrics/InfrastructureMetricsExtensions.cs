@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Prometheus;
-using WbExtensions.Infrastructure.Metrics.Abstractions;
+using WbExtensions.Application.Interfaces.Metrics;
 
 namespace WbExtensions.Infrastructure.Metrics;
 
@@ -16,7 +16,7 @@ public static class InfrastructureMetricsExtensions
         return builder;
     }
 
-    public static IServiceCollection SetupMetrics(
+    internal static IServiceCollection SetupMetrics(
         this IServiceCollection services)
     {
         Prometheus.Metrics.DefaultRegistry.SetStaticLabels(

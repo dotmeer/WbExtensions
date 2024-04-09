@@ -3,8 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WbExtensions.Application.Interfaces.Database;
 using WbExtensions.Domain;
-using WbExtensions.Infrastructure.Database.Abstractions;
 
 namespace WbExtensions.Service.Controllers;
 

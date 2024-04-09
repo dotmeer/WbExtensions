@@ -1,13 +1,13 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using WbExtensions.Infrastructure.Yandex.Abstractions;
+using WbExtensions.Application.Interfaces.Yandex;
 using WbExtensions.Infrastructure.Yandex.Implementations;
 using WbExtensions.Infrastructure.Yandex.Settings;
 
 namespace WbExtensions.Infrastructure.Yandex;
 
-public static class InfrastructureYandexExtensions
+internal static class InfrastructureYandexExtensions
 {
     public static IServiceCollection SetupYandex(this IServiceCollection services, IConfiguration configuration)
     {

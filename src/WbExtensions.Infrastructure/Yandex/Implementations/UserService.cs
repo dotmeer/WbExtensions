@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using WbExtensions.Infrastructure.Yandex.Abstractions;
+using WbExtensions.Application.Interfaces.Yandex;
 using WbExtensions.Infrastructure.Yandex.Models;
 using WbExtensions.Infrastructure.Yandex.Settings;
 

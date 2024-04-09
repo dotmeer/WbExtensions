@@ -6,9 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using WbExtensions.Application.Helpers;
+using WbExtensions.Application.Interfaces.Metrics;
+using WbExtensions.Application.Interfaces.Mqtt;
 using WbExtensions.Domain.Mqtt;
-using WbExtensions.Infrastructure.Metrics.Abstractions;
-using WbExtensions.Infrastructure.Mqtt.Abstractions;
 
 namespace WbExtensions.Application.MqttHandlers;
 
@@ -36,6 +36,11 @@ public sealed class ParseZigbee2MqttEventsHandler : IMqttHandler
         {
             var friendlyName = TopicNameHelper.GetZigbee2MqttDevice(message.Topic);
             var deviceMessagePayload = message.Payload;
+
+            if (deviceMessagePayload is null)
+            {
+                return;
+            }
 
             var zigbeeMessage = JsonSerializer.Deserialize<IDictionary<string, object>>(deviceMessagePayload);
 

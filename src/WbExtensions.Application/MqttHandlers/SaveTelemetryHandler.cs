@@ -3,9 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using WbExtensions.Application.Helpers;
+using WbExtensions.Application.Interfaces.Database;
 using WbExtensions.Domain;
 using WbExtensions.Domain.Mqtt;
-using WbExtensions.Infrastructure.Database.Abstractions;
 
 namespace WbExtensions.Application.MqttHandlers;
 

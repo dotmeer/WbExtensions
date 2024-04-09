@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
 using MQTTnet.Client;
+using WbExtensions.Application.Interfaces.Mqtt;
 using WbExtensions.Domain.Mqtt;
-using WbExtensions.Infrastructure.Mqtt.Abstractions;
 using WbExtensions.Infrastructure.Mqtt.Settings;
 
 namespace WbExtensions.Infrastructure.Mqtt;
