@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WbExtensions.Application.Devices;
 using WbExtensions.Domain.Alice.Requests;
@@ -12,7 +11,7 @@ namespace WbExtensions.Service.Controllers;
 
 [ApiController]
 [Route("aliceapi/v1.0")]
-[Authorize]
+[YandexAuthorization]
 public sealed class DevicesController : ControllerBase
 {
     private readonly IDevicesRepository _devicesRepository;

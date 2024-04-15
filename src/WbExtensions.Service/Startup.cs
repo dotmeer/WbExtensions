@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,20 +37,37 @@ internal sealed class Startup
             options.CustomSchemaIds(_ => _.FullName);
             options.UseAllOfToExtendReferenceSchemas();
             options.SupportNonNullableReferenceTypes();
+            options.AddSecurityDefinition("Bearer",
+                new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+            options.AddSecurityRequirement(
+                new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Scheme = "Bearer",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header,
+
+                        },
+                        new List<string>()
+                    }
+                });
         });
 
         services.AddRouting(options => { options.AppendTrailingSlash = true; });
         
-        services
-            .AddAuthentication()
-            .AddScheme<TokenAuthenticationOptions, TokenAuthenticationHandler>(AuthConstants.SchemeName, _ => { });
-
-        services
-            .AddAuthorizationBuilder()
-            .AddPolicy(
-                AuthConstants.SchemeName,
-                policy => policy.RequireClaim(AuthConstants.UserIdClaim));
-
         services
             .AddScoped<LoggingMiddleware>()
             .AddScoped<ExceptionsMiddleware>();
@@ -81,8 +99,6 @@ internal sealed class Startup
             .UseMiddleware<ExceptionsMiddleware>();
 
         app.UseRouting();
-        app.UseAuthentication();
-        app.UseAuthorization();
 
         app.UseEndpoints(endpoints =>
         {

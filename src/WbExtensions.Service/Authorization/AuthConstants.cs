@@ -2,7 +2,7 @@
 
 internal static class AuthConstants
 {
-    public const string SchemeName = "YandexToken";
+    public const string AuthenticationType = "YandexToken";
 
     public const string UserIdClaim = "UserId";
 }

@@ -51,7 +51,7 @@ internal static class InfrastructureDatabaseExtensions
         }
         var dbPath = Path.Combine(dbFolder, databaseName);
         
-        return $"Data Source={dbPath};Pooling=True;Max Pool Size=100;Journal Mode=Off;";
+        return $"Data Source={dbPath};Pooling=True;Max Pool Size=100;Journal Mode=WAL;";
     }
 
     private static void RunMigrations(DbConnectionFactory connectionFactory)

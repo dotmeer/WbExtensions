@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using WbExtensions.Domain.Alice.Responses;
+using WbExtensions.Service.Authorization;
 
 namespace WbExtensions.Service.Controllers;
 
 [ApiController]
 [Route("aliceapi/v1.0")]
-[Authorize]
+[YandexAuthorization]
 public sealed class UsersController : ControllerBase
 {
     [HttpPost("user/unlink")]

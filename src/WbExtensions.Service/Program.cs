@@ -1,8 +1,7 @@
-using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using WbExtensions.Infrastructure.Logging;
 
 namespace WbExtensions.Service;
@@ -11,7 +10,13 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
-        await Host.CreateDefaultBuilder(args)
+        await CreateWebHostBuilder(args)
+            .Build()
+            .RunAsync();
+    }
+
+    public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
             .ConfigureAppConfiguration((context, configurationBuilder) =>
             {
                 configurationBuilder.Sources.Clear();
@@ -28,13 +33,5 @@ public class Program
                 serviceProviderOptions.ValidateScopes = true;
                 serviceProviderOptions.ValidateOnBuild = true;
             })
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder
-                    .UseKestrel(options => { options.Listen(IPAddress.Any, 8000); })
-                    .UseStartup<Startup>();
-            })
-            .Build()
-            .RunAsync();
-    }
+            .UseStartup<Startup>();
 }

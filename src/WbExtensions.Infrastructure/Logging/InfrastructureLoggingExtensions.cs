@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace WbExtensions.Infrastructure.Logging;
@@ -15,9 +15,9 @@ public static class InfrastructureLoggingExtensions
 
         return builder;
     }
-
-    public static IHostBuilder SetupLogging(
-        this IHostBuilder builder)
+    
+    public static IWebHostBuilder SetupLogging(
+        this IWebHostBuilder builder)
     {
         builder.ConfigureLogging(loggingBuilder =>
         {

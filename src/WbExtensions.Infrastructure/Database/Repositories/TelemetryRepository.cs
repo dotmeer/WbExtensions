@@ -1,50 +1,55 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
-using Microsoft.Extensions.Logging;
 using WbExtensions.Application.Interfaces.Database;
 using WbExtensions.Domain;
 using WbExtensions.Infrastructure.Database.Settings;
 
 namespace WbExtensions.Infrastructure.Database.Repositories;
 
-internal sealed class TelemetryRepository : ITelemetryRepository, IAsyncDisposable
+internal sealed class TelemetryRepository : ITelemetryRepository
 {
     private readonly DbConnectionFactory _dbConnectionFactory;
-    private readonly ILogger<TelemetryRepository> _logger;
     private readonly DatabaseSettings _databaseSettings;
-    private readonly CancellationTokenSource _cancellationTokenSource;
-    private readonly ConcurrentQueue<Telemetry> _upsertQueue;
-    private readonly Task _upsertTask;
 
     public TelemetryRepository(
         DbConnectionFactory dbConnectionFactory,
-        ILogger<TelemetryRepository> logger,
         DatabaseSettings databaseSettings)
     {
         _dbConnectionFactory = dbConnectionFactory;
-        _logger = logger;
         _databaseSettings = databaseSettings;
-        _cancellationTokenSource = new CancellationTokenSource();
-        _upsertQueue = new ConcurrentQueue<Telemetry>();
-        _upsertTask = Task.Run(() => UpsertingTask(_cancellationTokenSource.Token));
     }
 
-    public Task UpsertAsync(Telemetry model, CancellationToken cancellationToken)
+    // TODO: смотреть, будут ли ошибки блокировки базы, если нет, то так и оставить
+    public async Task UpsertAsync(Telemetry model, CancellationToken cancellationToken)
     {
         if ((!_databaseSettings.StorableDevices.Any()
              || _databaseSettings.StorableDevices.Contains(model.Device, StringComparer.OrdinalIgnoreCase))
             && (!_databaseSettings.StorableControls.Any()
                 || _databaseSettings.StorableControls.Contains(model.Control, StringComparer.OrdinalIgnoreCase)))
         {
-            _upsertQueue.Enqueue(model);
-        }
+            var command = new CommandDefinition(@$"
+insert into {nameof(Telemetry)} ({nameof(Telemetry.Device)}, {nameof(Telemetry.Control)}, {nameof(Telemetry.Value)}, {nameof(Telemetry.Updated)})
+values(@{nameof(Telemetry.Device)}, @{nameof(Telemetry.Control)}, @{nameof(Telemetry.Value)}, @{nameof(Telemetry.Updated)})
+on conflict ({nameof(Telemetry.Device)}, {nameof(Telemetry.Control)}) do update set
+    {nameof(Telemetry.Value)} = @{nameof(Telemetry.Value)},
+    {nameof(Telemetry.Updated)} = @{nameof(Telemetry.Updated)};",
+                new
+                {
+                    model.Device,
+                    model.Control,
+                    model.Value,
+                    model.Updated
+                },
+                cancellationToken: cancellationToken);
 
-        return Task.CompletedTask;
+            using var connection = _dbConnectionFactory.Create();
+
+            await connection.ExecuteAsync(command);
+        }
     }
 
     public async Task<IReadOnlyCollection<Telemetry>> GetAsync(CancellationToken cancellationToken)
@@ -58,56 +63,5 @@ internal sealed class TelemetryRepository : ITelemetryRepository, IAsyncDisposab
         var result = await connection.QueryAsync<Telemetry>(command);
 
         return result.ToList();
-    }
-    
-    public async ValueTask DisposeAsync()
-    {
-        await _cancellationTokenSource.CancelAsync();
-        await _upsertTask;
-        _cancellationTokenSource.Dispose();
-    }
-
-    private async Task UpsertingTask(CancellationToken cancellationToken)
-    {
-        while (!cancellationToken.IsCancellationRequested)
-        {
-            try
-            {
-                if (_upsertQueue.TryDequeue(out var telemetry))
-                {
-                    await UpsertInternalAsync(telemetry, cancellationToken);
-                }
-                else
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error while processing upsert queue");
-            }
-        }
-    }
-
-    private async Task UpsertInternalAsync(Telemetry model, CancellationToken cancellationToken)
-    {
-        var command = new CommandDefinition(@$"
-insert into {nameof(Telemetry)} ({nameof(Telemetry.Device)}, {nameof(Telemetry.Control)}, {nameof(Telemetry.Value)}, {nameof(Telemetry.Updated)})
-values(@{nameof(Telemetry.Device)}, @{nameof(Telemetry.Control)}, @{nameof(Telemetry.Value)}, @{nameof(Telemetry.Updated)})
-on conflict ({nameof(Telemetry.Device)}, {nameof(Telemetry.Control)}) do update set
-    {nameof(Telemetry.Value)} = @{nameof(Telemetry.Value)},
-    {nameof(Telemetry.Updated)} = @{nameof(Telemetry.Updated)};",
-            new
-            {
-                model.Device,
-                model.Control,
-                model.Value,
-                model.Updated
-            },
-            cancellationToken: cancellationToken);
-
-        using var connection = _dbConnectionFactory.Create();
-
-        await connection.ExecuteAsync(command);
     }
 }
