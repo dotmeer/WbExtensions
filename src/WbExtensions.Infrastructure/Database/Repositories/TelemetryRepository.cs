@@ -10,10 +10,11 @@ using WbExtensions.Infrastructure.Database.Settings;
 
 namespace WbExtensions.Infrastructure.Database.Repositories;
 
-internal sealed class TelemetryRepository : ITelemetryRepository
+internal sealed class TelemetryRepository : ITelemetryRepository, IDisposable
 {
     private readonly DbConnectionFactory _dbConnectionFactory;
     private readonly DatabaseSettings _databaseSettings;
+    private readonly SemaphoreSlim _semaphore;
 
     public TelemetryRepository(
         DbConnectionFactory dbConnectionFactory,
@@ -21,34 +22,43 @@ internal sealed class TelemetryRepository : ITelemetryRepository
     {
         _dbConnectionFactory = dbConnectionFactory;
         _databaseSettings = databaseSettings;
+        _semaphore = new SemaphoreSlim(1, 1);
     }
 
-    // TODO: смотреть, будут ли ошибки блокировки базы, если нет, то так и оставить
     public async Task UpsertAsync(Telemetry model, CancellationToken cancellationToken)
     {
-        if ((!_databaseSettings.StorableDevices.Any()
-             || _databaseSettings.StorableDevices.Contains(model.Device, StringComparer.OrdinalIgnoreCase))
-            && (!_databaseSettings.StorableControls.Any()
-                || _databaseSettings.StorableControls.Contains(model.Control, StringComparer.OrdinalIgnoreCase)))
+        await _semaphore.WaitAsync(cancellationToken);
+
+        try
         {
-            var command = new CommandDefinition(@$"
+            if ((!_databaseSettings.StorableDevices.Any()
+                 || _databaseSettings.StorableDevices.Contains(model.Device, StringComparer.OrdinalIgnoreCase))
+                && (!_databaseSettings.StorableControls.Any()
+                    || _databaseSettings.StorableControls.Contains(model.Control, StringComparer.OrdinalIgnoreCase)))
+            {
+                var command = new CommandDefinition(@$"
 insert into {nameof(Telemetry)} ({nameof(Telemetry.Device)}, {nameof(Telemetry.Control)}, {nameof(Telemetry.Value)}, {nameof(Telemetry.Updated)})
 values(@{nameof(Telemetry.Device)}, @{nameof(Telemetry.Control)}, @{nameof(Telemetry.Value)}, @{nameof(Telemetry.Updated)})
 on conflict ({nameof(Telemetry.Device)}, {nameof(Telemetry.Control)}) do update set
     {nameof(Telemetry.Value)} = @{nameof(Telemetry.Value)},
     {nameof(Telemetry.Updated)} = @{nameof(Telemetry.Updated)};",
-                new
-                {
-                    model.Device,
-                    model.Control,
-                    model.Value,
-                    model.Updated
-                },
-                cancellationToken: cancellationToken);
+                    new
+                    {
+                        model.Device,
+                        model.Control,
+                        model.Value,
+                        model.Updated
+                    },
+                    cancellationToken: cancellationToken);
 
-            using var connection = _dbConnectionFactory.Create();
+                using var connection = _dbConnectionFactory.Create();
 
-            await connection.ExecuteAsync(command);
+                await connection.ExecuteAsync(command);
+            }
+        }
+        finally
+        {
+            _semaphore.Release();
         }
     }
 
@@ -63,5 +73,10 @@ on conflict ({nameof(Telemetry.Device)}, {nameof(Telemetry.Control)}) do update 
         var result = await connection.QueryAsync<Telemetry>(command);
 
         return result.ToList();
+    }
+
+    public void Dispose()
+    {
+        _semaphore.Dispose();
     }
 }
