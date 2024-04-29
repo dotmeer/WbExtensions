@@ -5,6 +5,7 @@ namespace WbExtensions.Service.Controllers;
 
 [ApiController]
 [Route("aliceapi/v1.0")]
+[AllowExternalAccess(true)]
 [YandexAuthorization]
 public sealed class HealthCheckController : ControllerBase
 {

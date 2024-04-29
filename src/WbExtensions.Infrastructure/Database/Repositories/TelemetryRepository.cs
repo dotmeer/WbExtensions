@@ -64,15 +64,26 @@ on conflict ({nameof(Telemetry.Device)}, {nameof(Telemetry.Control)}) do update 
 
     public async Task<IReadOnlyCollection<Telemetry>> GetAsync(CancellationToken cancellationToken)
     {
-        var command = new CommandDefinition(
-            $@"select * from {nameof(Telemetry)}",
-            cancellationToken: cancellationToken);
+        await _semaphore.WaitAsync(cancellationToken);
+        
+        var result = new List<Telemetry>(0);
 
-        using var connection = _dbConnectionFactory.Create();
+        try
+        {
+            var command = new CommandDefinition(
+                $@"select * from {nameof(Telemetry)}",
+                cancellationToken: cancellationToken);
 
-        var result = await connection.QueryAsync<Telemetry>(command);
+            using var connection = _dbConnectionFactory.Create();
 
-        return result.ToList();
+            result.AddRange(await connection.QueryAsync<Telemetry>(command));
+        }
+        finally
+        {
+            _semaphore.Release();
+        }
+
+        return result;
     }
 
     public void Dispose()

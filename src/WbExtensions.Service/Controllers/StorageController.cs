@@ -4,11 +4,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WbExtensions.Application.Interfaces.Database;
 using WbExtensions.Domain;
+using WbExtensions.Service.Authorization;
 
 namespace WbExtensions.Service.Controllers;
 
 [ApiController]
 [Route("storage")]
+[AllowExternalAccess(false)]
 public sealed class StorageController : ControllerBase
 {
     private readonly ITelemetryRepository _telemetryRepository;

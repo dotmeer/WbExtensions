@@ -15,7 +15,7 @@ internal sealed class YandexAuthorizationAttribute : Attribute, IAsyncAuthorizat
     {
         var userService = context.HttpContext.RequestServices.GetService<IUserService>()!;
 
-        if (context.HttpContext.Request.Headers.TryGetValue("Authorization", out var authHeader))
+        if (context.HttpContext.Request.Headers.TryGetValue(AuthConstants.AuthHeaderName, out var authHeader))
         {
             var token = authHeader.ToString().Replace("Bearer ", "");
             var userId = await userService.GetUserIdAsync(token, context.HttpContext.RequestAborted);
