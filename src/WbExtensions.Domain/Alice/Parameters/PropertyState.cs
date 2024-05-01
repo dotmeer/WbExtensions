@@ -1,4 +1,6 @@
-﻿namespace WbExtensions.Domain.Alice.Parameters;
+﻿using System;
+
+namespace WbExtensions.Domain.Alice.Parameters;
 
 public abstract class PropertyState
 {
@@ -8,6 +10,4 @@ public abstract class PropertyState
     {
         Instance = instance;
     }
-
-    public abstract void UpdateValue(object  value);
 }

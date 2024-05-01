@@ -3,3 +3,4 @@
 **/obj/
 **/db/
 **/appsettings.local.json
+**/appsettings.schema.json

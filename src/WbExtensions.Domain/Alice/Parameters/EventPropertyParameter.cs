@@ -5,13 +5,13 @@ namespace WbExtensions.Domain.Alice.Parameters;
 
 public sealed class EventPropertyParameter : PropertyParameter
 {
-    private EventPropertyParameter(string instance, params EventPropertyParameterValue[] values)
+    private EventPropertyParameter(string instance, params EventPropertyParameterValue[] events)
         : base(instance)
     {
-        Values = values;
+        Events = events;
     }
 
-    public IReadOnlyList<EventPropertyParameterValue> Values { get; }
+    public IReadOnlyList<EventPropertyParameterValue> Events { get; }
 
     public static EventPropertyParameter EventVibration()
     {

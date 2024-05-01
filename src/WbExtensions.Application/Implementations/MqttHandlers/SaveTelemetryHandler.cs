@@ -2,13 +2,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using WbExtensions.Application._Internal.Helpers;
+using WbExtensions.Application.Helpers;
 using WbExtensions.Application.Interfaces.Database;
 using WbExtensions.Application.Interfaces.Mqtt;
 using WbExtensions.Domain;
 using WbExtensions.Domain.Mqtt;
 
-namespace WbExtensions.Application.MqttHandlers;
+namespace WbExtensions.Application.Implementations.MqttHandlers;
 
 public sealed class SaveTelemetryHandler : IMqttHandler
 {

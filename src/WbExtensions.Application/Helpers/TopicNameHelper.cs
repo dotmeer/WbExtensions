@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace WbExtensions.Application._Internal.Helpers;
+namespace WbExtensions.Application.Helpers;
 
-internal static class TopicNameHelper
+public static class TopicNameHelper
 {
     public static (string deviceName, string topicName) ParseDeviceControlTopic(string topic)
     {

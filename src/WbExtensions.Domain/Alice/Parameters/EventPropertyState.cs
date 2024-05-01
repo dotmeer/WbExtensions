@@ -2,14 +2,10 @@
 
 public sealed class EventPropertyState : PropertyState
 {
-    public EventPropertyState(string instance) : base(instance)
+    public EventPropertyState(string instance, string value = default!) : base(instance)
     {
+        Value = value;
     }
 
-    public string Value { get; private set; } = default!;
-
-    public override void UpdateValue(object value)
-    {
-        Value = value.ToString()!;
-    }
+    public string Value { get; private set; }
 }

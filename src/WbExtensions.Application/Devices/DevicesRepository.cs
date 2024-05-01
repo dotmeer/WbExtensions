@@ -10,7 +10,7 @@ using WbExtensions.Domain.Alice.Requests;
 
 namespace WbExtensions.Application.Devices;
 
-internal sealed class DevicesRepository : IDevicesRepository
+internal sealed class DevicesRepository
 {
     private readonly IList<Device> _devices;
 
@@ -35,7 +35,7 @@ internal sealed class DevicesRepository : IDevicesRepository
         {
             var property = device.Properties.FirstOrDefault(_ => _.Type == PropertyTypes.Float);
 
-            property?.State.UpdateValue(new Random().Next(0, 100));
+            //property?.State.UpdateValue(new Random().Next(0, 100));
         }
 
         return result;

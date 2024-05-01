@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WbExtensions.Infrastructure.Database;
+using WbExtensions.Infrastructure.Home;
 using WbExtensions.Infrastructure.Metrics;
 using WbExtensions.Infrastructure.Mqtt;
 using WbExtensions.Infrastructure.Yandex;
@@ -17,7 +18,8 @@ public static class InfrastructureExtensions
             .SetupDatabase(configuration)
             .SetupMetrics()
             .SetupMqtt(configuration)
-            .SetupYandex(configuration);
+            .SetupYandex(configuration)
+            .SetupHome();
 
         return services;
     }

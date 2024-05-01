@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using WbExtensions.Application.Devices;
-using WbExtensions.Application.MqttHandlers;
+using WbExtensions.Application.Implementations.Alice;
+using WbExtensions.Application.Implementations.MqttHandlers;
+using WbExtensions.Application.Interfaces.Alice;
 
 namespace WbExtensions.Application;
 
@@ -13,7 +14,7 @@ public static class ApplicationExtensions
             .AddSingleton<MqttDevicesControlsMetricsHandler>()
             .AddSingleton<ParseZigbee2MqttEventsHandler>()
             .AddSingleton<SaveTelemetryHandler>()
-            .AddSingleton<IDevicesRepository, DevicesRepository>();
+            .AddSingleton<IAliceDevicesService, AliceDevicesService>();
 
         return services;
     }

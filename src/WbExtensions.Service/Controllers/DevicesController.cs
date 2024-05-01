@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WbExtensions.Application.Devices;
+using WbExtensions.Application.Interfaces.Alice;
 using WbExtensions.Domain.Alice.Requests;
 using WbExtensions.Domain.Alice.Responses;
 using WbExtensions.Service.Authorization;
@@ -15,11 +15,11 @@ namespace WbExtensions.Service.Controllers;
 [YandexAuthorization]
 public sealed class DevicesController : ControllerBase
 {
-    private readonly IDevicesRepository _devicesRepository;
+    private readonly IAliceDevicesService _aliceDevicesService;
 
-    public DevicesController(IDevicesRepository devicesRepository)
+    public DevicesController(IAliceDevicesService aliceDevicesService)
     {
-        _devicesRepository = devicesRepository;
+        _aliceDevicesService = aliceDevicesService;
     }
 
     [HttpGet("user/devices")]
@@ -33,7 +33,7 @@ public sealed class DevicesController : ControllerBase
             Payload = new Payload
             {
                 UserId = User.FindFirst(AuthConstants.UserIdClaim)!.Value,
-                Devices = _devicesRepository.GetDevices()
+                Devices = await _aliceDevicesService.GetAsync(cancellationToken)
             }
         };
 
@@ -52,7 +52,9 @@ public sealed class DevicesController : ControllerBase
             Payload = new Payload
             {
                 UserId = User.FindFirst(AuthConstants.UserIdClaim)!.Value,
-                Devices = _devicesRepository.GetDevices(request.Devices.Select(_ => _.Id).ToArray())
+                Devices = await _aliceDevicesService.GetAsync(
+                    request.Devices.Select(_ => _.Id).ToArray(),
+                    cancellationToken)
             }
         };
 
@@ -71,7 +73,9 @@ public sealed class DevicesController : ControllerBase
             Payload = new Payload
             {
                 UserId = User.FindFirst(AuthConstants.UserIdClaim)!.Value,
-                Devices = _devicesRepository.UpdateDeviceState(request.Payload.Devices.ToList())
+                Devices = await _aliceDevicesService.UpdateDevicesStateAsync(
+                    request.Payload.Devices.ToList(),
+                    cancellationToken)
             }
         };
 

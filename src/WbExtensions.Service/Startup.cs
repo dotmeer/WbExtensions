@@ -5,12 +5,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using WbExtensions.Application;
-using WbExtensions.Application.MqttHandlers;
+using WbExtensions.Application.Implementations.MqttHandlers;
 using WbExtensions.Domain.Mqtt;
 using WbExtensions.Infrastructure;
 using WbExtensions.Infrastructure.Json;
 using WbExtensions.Infrastructure.Metrics;
-using WbExtensions.Service.Authorization;
+using WbExtensions.Service.BackgroundServices;
 using WbExtensions.Service.Middlewares;
 
 namespace WbExtensions.Service;
@@ -77,6 +77,7 @@ internal sealed class Startup
             .SetupApplication();
 
         services
+            .AddHostedService<HomeInitializationBackgroundService>()
             //.AddMqttHandler<LogZigbee2MqttEventsHandler>(new QueueConnection("zigbee2mqtt/+", "test"))
             .AddMqttHandler<SaveTelemetryHandler>(new QueueConnection("/devices/+/controls/+", "db"))
             .AddMqttHandler<MqttDevicesControlsMetricsHandler>(new QueueConnection("/devices/+/controls/+", "prometheus"))
