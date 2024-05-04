@@ -8,6 +8,8 @@ public enum VirtualDeviceType
 
     DoorSensor,
 
+    Fan,
+    
     Light,
     
     OpenableCurtain

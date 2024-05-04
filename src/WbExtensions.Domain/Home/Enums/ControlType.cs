@@ -4,23 +4,21 @@ public enum ControlType
 {
     Default,
 
+    // датчики
     Co2,
 
     Contact,
-
-    Curtains,
-
+    
     Humidity,
 
     Illuminance,
     
     Occupancy,
 
-    SimpleLamp,
-
-    State,
-
     Temperature,
 
-    Voc
+    Voc,
+
+    // активные устройства
+    Switch
 }

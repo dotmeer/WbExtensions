@@ -6,6 +6,8 @@ namespace WbExtensions.Domain.Home;
 
 public sealed class VirtualDevice
 {
+    private readonly string? _virtualDeviceName;
+
     public string Id { get; init; } = default!;
 
     public VirtualDeviceType Type { get; init; }
@@ -14,8 +16,14 @@ public sealed class VirtualDevice
 
     public string? Description { get; init; }
 
-    // TODO: переделать на строку, зачем enum?
-    public Room? Room { get; init; }
+    public string? Room { get; init; }
+
+    public string VirtualDeviceName
+    {
+        get => _virtualDeviceName ?? Id;
+
+        init => _virtualDeviceName = value;
+    }
 
     public IReadOnlyCollection<Control> Controls { get; init; } = Array.Empty<Control>();
 }

@@ -62,10 +62,6 @@ internal static class PropertiesConverter
                         new EventPropertyState(PropertyInstances.EventMotion, control.ToMotion()));
                     break;
 
-                case ControlType.State:
-                    // TODO: State
-                    break;
-
                 case ControlType.Temperature:
                     yield return new Property(
                         PropertyTypes.Float,

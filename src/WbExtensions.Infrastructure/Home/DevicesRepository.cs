@@ -53,8 +53,10 @@ internal sealed class DevicesRepository : IDevicesRepository
             {
                 foreach (var control in device.Controls)
                 {
-                    var telemetry = telemetryValues
-                        .FirstOrDefault(_ => _.Device == device.Id && _.Control == control.Id);
+                    var telemetry = telemetryValues.FirstOrDefault(_ =>
+                        _.Device == device.VirtualDeviceName
+                        && _.Control == control.VirtualControlName);
+
                     if (telemetry is not null)
                     {
                         control.Value = telemetry.Value;
@@ -108,9 +110,9 @@ internal sealed class DevicesRepository : IDevicesRepository
 
     private Task HandleAsync(QueueMessage message, CancellationToken cancellationToken)
     {
-        var (deviceId, controlId) = TopicNameHelper.ParseDeviceControlTopic(message.Topic);
+        var (virtualDeviceName, virtualControlName) = TopicNameHelper.ParseDeviceControlTopic(message.Topic);
         
-        if (TryGetControl(deviceId, controlId, out var control))
+        if (TryGetControl(virtualDeviceName, virtualControlName, out var control))
         {
             control!.Value = message.Payload!;
         }
@@ -126,10 +128,10 @@ internal sealed class DevicesRepository : IDevicesRepository
         }
     }
 
-    private bool TryGetControl(string deviceId, string controlId, out Control? control)
+    private bool TryGetControl(string virtualDeviceName, string virtualControlName, out Control? control)
     {
-        control = _devices.FirstOrDefault(_ => _.Id == deviceId)
-            ?.Controls.FirstOrDefault(_ => _.Id == controlId);
+        control = _devices.FirstOrDefault(_ => _.VirtualDeviceName == virtualDeviceName)
+            ?.Controls.FirstOrDefault(_ => _.VirtualControlName == virtualControlName);
 
         return control is not null;
     }

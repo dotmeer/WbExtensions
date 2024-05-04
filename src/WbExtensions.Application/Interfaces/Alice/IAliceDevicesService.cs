@@ -15,6 +15,6 @@ public interface IAliceDevicesService
         IReadOnlyCollection<string> ids, CancellationToken cancellationToken);
 
     Task<IList<Device>> UpdateDevicesStateAsync(
-        List<SetUSerDevicesStateRequestItem> actions,
+        IReadOnlyCollection<SetUSerDevicesStateRequestItem> actions,
         CancellationToken cancellationToken);
 }

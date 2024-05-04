@@ -15,7 +15,7 @@ internal static class CapabilitiesConverter
         {
             switch (control.Type)
             {
-                case ControlType.SimpleLamp:
+                case ControlType.Switch:
                     yield return new Capability(
                         CapabilityTypes.OnOff,
                         true,
@@ -23,7 +23,7 @@ internal static class CapabilitiesConverter
                         new OnOffCapabilityParameter(false),
                         new OnOffCapabilityState
                         {
-                            Value = control.Value == "1"
+                            Value = control.IsEnabled()
                         });
                     break;
 
@@ -32,5 +32,22 @@ internal static class CapabilitiesConverter
                     break;
             }
         }
+    }
+
+    public static ControlType? GetControlType(this Capability capability)
+    {
+        switch (capability.Type)
+        {
+            case CapabilityTypes.OnOff:
+                return ControlType.Switch;
+
+            default:
+                return null;
+        }
+    }
+
+    private static bool IsEnabled(this Control control)
+    {
+        return control.Value == "1";
     }
 }
