@@ -92,7 +92,7 @@ internal sealed class DevicesRepository
             Name = "Тестовая лампочка",
             Description = "Тестовая виртуальная лампочка, которая, как я надеюсь, будет работать",
             Type = DeviceTypes.Light,
-            CustomData = new Dictionary<string, object>(0),
+            CustomData = null,
             Capabilities = new List<Capability>
             {
                 new(

@@ -18,7 +18,7 @@ public sealed class Device
     public string Type { get; init; } = default!;
 
     [JsonPropertyName("custom_data")]
-    public IDictionary<string, object>? CustomData { get; init; }
+    public IDictionary<string, VirtualDeviceCustomData>? CustomData { get; init; }
 
     public IList<Capability> Capabilities { get; init; } = new List<Capability>(0);
 

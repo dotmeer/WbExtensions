@@ -10,6 +10,7 @@ using WbExtensions.Application.Interfaces.Database;
 using WbExtensions.Application.Interfaces.Home;
 using WbExtensions.Application.Interfaces.Mqtt;
 using WbExtensions.Domain.Home;
+using WbExtensions.Domain.Home.Enums;
 using WbExtensions.Domain.Mqtt;
 
 namespace WbExtensions.Infrastructure.Home;
@@ -99,11 +100,46 @@ internal sealed class DevicesRepository : IDevicesRepository
         {
             if (TryGetControl(command.Device, command.Control, out var control))
             {
-                control!.Value = command.Value;
-                await _mqttService.PublishAsync(
-                    new QueueConnection($"/devices/{command.Device}/controls/{command.Control}", MqttClientName),
-                    command.Value,
-                    cancellationToken);
+                QueueConnection? connection;
+                string? controlValue;
+
+                switch (control!.Type)
+                {
+                    case ControlType.Switch:
+                        connection = new QueueConnection(
+                            $"/devices/{command.Device}/controls/{command.Control}/on",
+                            MqttClientName);
+                        controlValue = (bool)command.Value ? "1" : "0";
+                        break;
+
+                    case ControlType.Position:
+                        connection = new QueueConnection(
+                            $"zigbee2mqtt/{command.Device}/set",
+                            MqttClientName);
+                        controlValue = $"{{\"position\": {command.Value}}}";
+                        break;
+
+                    case ControlType.CurtainState:
+                        connection = new QueueConnection(
+                            $"zigbee2mqtt/{command.Device}/set",
+                            MqttClientName);
+                        controlValue = $"{{\"state\": \"{((bool)command.Value ? "OPEN" : "CLOSE")}\"}}";
+                        break;
+
+                    default:
+                        connection = null;
+                        controlValue = null;
+                        break;
+                }
+
+                if (connection is not null && controlValue is not null)
+                {
+                    control.Value = controlValue;
+                    await _mqttService.PublishAsync(
+                        connection,
+                        controlValue,
+                        cancellationToken);
+                }
             }
         }
     }
@@ -130,8 +166,10 @@ internal sealed class DevicesRepository : IDevicesRepository
 
     private bool TryGetControl(string virtualDeviceName, string virtualControlName, out Control? control)
     {
-        control = _devices.FirstOrDefault(_ => _.VirtualDeviceName == virtualDeviceName)
-            ?.Controls.FirstOrDefault(_ => _.VirtualControlName == virtualControlName);
+        control = _devices
+            .Where(_ => _.VirtualDeviceName == virtualDeviceName)
+            .SelectMany(_ => _.Controls)
+            .FirstOrDefault(_ => _.VirtualControlName == virtualControlName);
 
         return control is not null;
     }

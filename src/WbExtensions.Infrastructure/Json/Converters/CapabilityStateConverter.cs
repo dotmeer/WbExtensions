@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using WbExtensions.Domain.Alice.Capabilities;
-using WbExtensions.Domain.Alice.Capabilities.OnOff;
 using WbExtensions.Domain.Alice.Constants;
 
 namespace WbExtensions.Infrastructure.Json.Converters;
@@ -16,7 +15,7 @@ public sealed class CapabilityStateConverter : JsonConverter<CapabilityState?>
         if (instance is not null
             && CapabilityStateInstances.InstanceCapabilityStateTypeMapping.TryGetValue(instance, out var type))
         {
-            return (OnOffCapabilityState?)JsonSerializer.Deserialize(ref reader, type, options);
+            return (CapabilityState?)JsonSerializer.Deserialize(ref reader, type, options);
         }
 
         return null;

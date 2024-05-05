@@ -49,7 +49,7 @@ public sealed class CapabilityStateActionResult
     public static CapabilityStateActionResult ErrorDeviceStuck()
         => new CapabilityStateActionResult("ERROR", "DEVICE_STUCK", "Устройство застряло");
     
-    public static CapabilityStateActionResult ErrorDEviceOff()
+    public static CapabilityStateActionResult ErrorDeviceOff()
         => new CapabilityStateActionResult("ERROR", "DEVICE_OFF", "Устройство выключено");
     
     public static CapabilityStateActionResult ErrorFirmwareOutOfDate()

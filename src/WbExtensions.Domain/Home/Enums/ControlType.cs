@@ -20,5 +20,9 @@ public enum ControlType
     Voc,
 
     // активные устройства
-    Switch
+    Switch,
+
+    Position,
+
+    CurtainState
 }

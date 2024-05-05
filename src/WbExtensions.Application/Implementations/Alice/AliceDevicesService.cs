@@ -42,39 +42,43 @@ internal sealed class AliceDevicesService : IAliceDevicesService
         IReadOnlyCollection<SetUSerDevicesStateRequestItem> actions,
         CancellationToken cancellationToken)
     {
-        var virtualDevices = await _devicesRepository.GetAsync(
-            actions.Select(_ => _.Id).ToList(),
-            cancellationToken);
-
-        var commands = new List<Command>(virtualDevices.Count);
-
-       
-
+        var commands = new List<Command>(actions.SelectMany(_ => _.Capabilities).Count());
         var result = new List<Device>(actions.Count);
 
         foreach (var action in actions)
         {
-            var virtualDevice = virtualDevices.FirstOrDefault(_ => _.Id == action.Id);
-
-            if (virtualDevice is null)
-            {
-                continue;
-            }
-
             var device = new Device
             {
                 Id = action.Id
             };
-
+            
             foreach (var capability in action.Capabilities.Where(_ => _.State is not null))
             {
+                var newControlValue = capability.State?.GetValue();
                 var resultCapability = capability.GetUpdatedCapability();
-                resultCapability.State!.ActionResult = CapabilityStateActionResult.Success();
+
+                if (action.CustomData is not null
+                    && action.CustomData.TryGetValue(capability.Type, out var virtualDeviceData)
+                    && newControlValue is not null)
+                {
+                    commands.Add(new Command(
+                        virtualDeviceData.VirtualDeviceName,
+                        virtualDeviceData.VirtualControlName,
+                        newControlValue));
+                    resultCapability.State!.ActionResult = CapabilityStateActionResult.Success();
+                }
+                else
+                {
+                    resultCapability.State!.ActionResult = CapabilityStateActionResult.ErrorInternalError();
+                }
+                
                 device.Capabilities.Add(resultCapability);
             }
 
             result.Add(device);
         }
+
+        await _devicesRepository.UpdateStateAsync(commands, cancellationToken);
 
         return result;
     }

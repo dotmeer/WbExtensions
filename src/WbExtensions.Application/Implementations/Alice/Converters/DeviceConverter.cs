@@ -13,22 +13,18 @@ internal static class DeviceConverter
     {
         foreach (var virtualDevice in virtualDevices)
         {
-            yield return virtualDevice.ToDevice();
+            yield return new Device
+            {
+                Id = virtualDevice.Id,
+                Name = virtualDevice.Name,
+                Description = virtualDevice.Description ?? string.Empty,
+                Type = GetAliceDeviceType(virtualDevice.Type),
+                Room = virtualDevice.Room,
+                Capabilities = virtualDevice.GetCapabilities().ToList(),
+                Properties = virtualDevice.Controls.ToProperties().ToList(),
+                CustomData = GetCustomData(virtualDevice)
+            };
         }
-    }
-
-    private static Device ToDevice(this VirtualDevice virtualDevice)
-    {
-        return new Device
-        {
-            Id = virtualDevice.Id,
-            Name = virtualDevice.Name,
-            Description = virtualDevice.Description ?? string.Empty,
-            Type = GetAliceDeviceType(virtualDevice.Type),
-            Room = virtualDevice.Room,
-            Capabilities = virtualDevice.Controls.ToCapabilities().ToList(),
-            Properties = virtualDevice.Controls.ToProperties().ToList()
-        };
     }
     
     private static string GetAliceDeviceType(VirtualDeviceType virtualDeviceType)
@@ -42,5 +38,32 @@ internal static class DeviceConverter
             VirtualDeviceType.OpenableCurtain => DeviceTypes.OpenableCurtain,
             _ => DeviceTypes.Other
         };
+    }
+
+    private static IDictionary<string, VirtualDeviceCustomData>? GetCustomData(this VirtualDevice virtualDevice)
+    {
+        switch (virtualDevice.Type)
+        {
+            case VirtualDeviceType.Fan:
+            case VirtualDeviceType.Light:
+            case VirtualDeviceType.OpenableCurtain:
+                var result =  new Dictionary<string, VirtualDeviceCustomData>(virtualDevice.Controls.Count);
+                foreach (var control in virtualDevice.Controls)
+                {
+                    var capabilityType = control.GetCapabilityType();
+                    if(capabilityType is not null)
+                    {
+                        result.Add(
+                            capabilityType,
+                            new VirtualDeviceCustomData(
+                                virtualDevice.VirtualDeviceName, 
+                                control.VirtualControlName));
+                    }
+                }
+                return result;
+
+            default:
+                return null;
+        }
     }
 }
