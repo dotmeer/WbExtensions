@@ -14,15 +14,25 @@ namespace WbExtensions.Service.Controllers;
 public sealed class StorageController : ControllerBase
 {
     private readonly ITelemetryRepository _telemetryRepository;
+    private readonly IUserInfoRepository _userInfoRepository;
 
-    public StorageController(ITelemetryRepository telemetryRepository)
+    public StorageController(
+        ITelemetryRepository telemetryRepository,
+        IUserInfoRepository userInfoRepository)
     {
         _telemetryRepository = telemetryRepository;
+        _userInfoRepository = userInfoRepository;
     }
 
-    [HttpGet]
-    public Task<IReadOnlyCollection<Telemetry>> GetAsync(CancellationToken cancellationToken)
+    [HttpGet(nameof(Telemetry))]
+    public Task<IReadOnlyCollection<Telemetry>> GetTelemetryAsync(CancellationToken cancellationToken)
     {
         return _telemetryRepository.GetAsync(cancellationToken);
+    }
+
+    [HttpGet(nameof(UserInfo))]
+    public Task<IReadOnlyCollection<UserInfo>> GetUserInfoAsync(CancellationToken cancellationToken)
+    {
+        return _userInfoRepository.GetAsync(cancellationToken);
     }
 }

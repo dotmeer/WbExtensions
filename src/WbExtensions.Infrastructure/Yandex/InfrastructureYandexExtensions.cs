@@ -11,13 +11,17 @@ internal static class InfrastructureYandexExtensions
 {
     public static IServiceCollection SetupYandex(this IServiceCollection services, IConfiguration configuration)
     {
-        var settings = configuration.GetSection("Yandex:UserService").Get<UserServiceSettings>()
+        var userServiceSettings = configuration.GetSection("Yandex:UserService").Get<UserServiceSettings>()
                        ?? throw new ArgumentNullException(nameof(UserServiceSettings));
+        var pushServiceSettings = configuration.GetSection("Yandex:PushService").Get<PushServiceSettings>()
+                                  ?? throw new ArgumentNullException(nameof(PushServiceSettings));
 
         services
-            .AddSingleton(settings)
+            .AddSingleton(userServiceSettings)
+            .AddSingleton(pushServiceSettings)
             .AddHttpClient()
-            .AddSingleton<IUserService, UserService>();
+            .AddSingleton<IUserService, UserService>()
+            .AddSingleton<IPushService, PushService>();
 
         return services;
     }

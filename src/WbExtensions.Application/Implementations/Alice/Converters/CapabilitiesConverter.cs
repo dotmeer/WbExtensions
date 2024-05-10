@@ -10,7 +10,7 @@ namespace WbExtensions.Application.Implementations.Alice.Converters;
 
 internal static class CapabilitiesConverter
 {
-    public static IEnumerable<Capability> GetCapabilities(this IReadOnlyCollection<Control> controls)
+    public static IEnumerable<Capability> ToCapabilities(this IReadOnlyCollection<Control> controls)
     {
 
         foreach (var control in controls)
@@ -21,7 +21,7 @@ internal static class CapabilitiesConverter
                     yield return new Capability(
                         CapabilityTypes.OnOff,
                         true,
-                        false,
+                        true,
                         new OnOffCapabilityParameter(false),
                         new OnOffCapabilityState
                         {
@@ -33,7 +33,7 @@ internal static class CapabilitiesConverter
                     yield return new Capability(
                         CapabilityTypes.Range,
                         true,
-                        false,
+                        true,
                         new RangeCapabilityParameter(
                             "open",
                             "unit.percent",
@@ -46,7 +46,7 @@ internal static class CapabilitiesConverter
                     yield return new Capability(
                         CapabilityTypes.OnOff,
                         true,
-                        false,
+                        true,
                         new OnOffCapabilityParameter(false),
                         new OnOffCapabilityState
                         {

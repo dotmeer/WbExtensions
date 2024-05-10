@@ -19,7 +19,7 @@ internal static class DeviceConverter
                 Description = virtualDevice.Description ?? string.Empty,
                 Type = virtualDevice.Type,
                 Room = virtualDevice.Room,
-                Capabilities = virtualDevice.Controls.GetCapabilities().ToList(),
+                Capabilities = virtualDevice.Controls.ToCapabilities().ToList(),
                 Properties = virtualDevice.Controls.ToProperties().ToList(),
                 CustomData = GetCustomData(virtualDevice)
             };

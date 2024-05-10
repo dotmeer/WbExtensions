@@ -8,8 +8,11 @@ using WbExtensions.Application.Interfaces.Alice;
 using WbExtensions.Application.Interfaces.Database;
 using WbExtensions.Application.Interfaces.Home;
 using WbExtensions.Application.Interfaces.Mqtt;
+using WbExtensions.Application.Interfaces.Yandex;
 using WbExtensions.Domain.Alice;
 using WbExtensions.Domain.Alice.Capabilities;
+using WbExtensions.Domain.Alice.Parameters;
+using WbExtensions.Domain.Alice.Push;
 using WbExtensions.Domain.Alice.Requests;
 using WbExtensions.Domain.Home;
 using WbExtensions.Domain.Home.Enums;
@@ -24,17 +27,23 @@ internal sealed class AliceDevicesManager : IAliceDevicesManager
     private readonly IMqttService _mqttService;
     private readonly IDevicesRepository _devicesRepository;
     private readonly ITelemetryRepository _telemetryRepository;
+    private readonly IUserInfoRepository _userInfoRepository;
+    private readonly IPushService _pushService;
 
     private bool _inited;
 
     public AliceDevicesManager(
         IMqttService mqttService, 
         IDevicesRepository devicesRepository,
-        ITelemetryRepository telemetryRepository)
+        ITelemetryRepository telemetryRepository,
+        IUserInfoRepository userInfoRepository,
+        IPushService pushService)
     {
         _mqttService = mqttService;
         _devicesRepository = devicesRepository;
         _telemetryRepository = telemetryRepository;
+        _userInfoRepository = userInfoRepository;
+        _pushService = pushService;
 
         _inited = false;
     }
@@ -134,23 +143,25 @@ internal sealed class AliceDevicesManager : IAliceDevicesManager
         return result;
     }
 
-    private Task HandleAsync(QueueMessage message, CancellationToken cancellationToken)
+    private async Task HandleAsync(QueueMessage message, CancellationToken cancellationToken)
     {
         var (virtualDeviceName, virtualControlName) = TopicNameHelper.ParseDeviceControlTopic(message.Topic);
 
-        if (TryGetControl(virtualDeviceName, virtualControlName, out var control))
+        if (TryGetControl(virtualDeviceName, virtualControlName, out var virtualDevice, out var control))
         {
-            control!.Value = message.Payload!;
+            if(control!.Value != message.Payload)
+            {
+                control.Value = message.Payload!;
+                await PushUpdateToYandexAsync(virtualDevice!, control, cancellationToken);
+            }
         }
-
-        return Task.CompletedTask;
     }
 
     private async Task PublishUpdatesAsync(IReadOnlyCollection<Command> commands, CancellationToken cancellationToken)
     {
         foreach (var command in commands)
         {
-            if (TryGetControl(command.Device, command.Control, out var control))
+            if (TryGetControl(command.Device, command.Control, out var virtualDevice, out var control))
             {
                 QueueConnection? connection;
                 string? controlValue;
@@ -196,13 +207,44 @@ internal sealed class AliceDevicesManager : IAliceDevicesManager
         }
     }
 
-    private bool TryGetControl(string virtualDeviceName, string virtualControlName, out Control? control)
+    private bool TryGetControl(string virtualDeviceName, string virtualControlName, out VirtualDevice? virtualDevice, out Control? control)
     {
-        control = _devicesRepository.VirtualDevices
-            .Where(_ => _.VirtualDeviceName == virtualDeviceName)
-            .SelectMany(_ => _.Controls)
+        virtualDevice = _devicesRepository.VirtualDevices
+            .FirstOrDefault(_ => _.VirtualDeviceName == virtualDeviceName);
+        
+        control = virtualDevice?.Controls
             .FirstOrDefault(_ => _.VirtualControlName == virtualControlName);
 
         return control is not null;
+    }
+
+    private async Task PushUpdateToYandexAsync(VirtualDevice virtualDevice, Control control, CancellationToken cancellationToken)
+    {
+        var controlList = new List<Control>
+        {
+            control
+        };
+
+        var devices = new List<Device>
+        {
+            new Device
+            {
+                Id = virtualDevice.Id,
+                Properties = controlList.ToProperties().ToList(),
+                Capabilities = controlList.ToCapabilities().ToList()
+            }
+        };
+
+        foreach (var userInfo in await _userInfoRepository.GetAsync(cancellationToken))
+        {
+            var pushRequest = new PushRequest(
+                new PushRequestPayload
+                {
+                    UserId = userInfo.Id,
+                    Devices = devices
+                });
+
+            await _pushService.PushAsync(pushRequest, cancellationToken);
+        }
     }
 }

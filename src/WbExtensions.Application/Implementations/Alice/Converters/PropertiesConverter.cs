@@ -20,7 +20,7 @@ internal static class PropertiesConverter
                     yield return new Property(
                         PropertyTypes.Float,
                         true,
-                        false,
+                        true,
                         FloatPropertyParameter.FloatCo2Level(),
                         new FloatPropertyState(PropertyInstances.FloatCo2Level, control.ToFloat()));
                     break;
@@ -29,7 +29,7 @@ internal static class PropertiesConverter
                     yield return new Property(
                         PropertyTypes.Event,
                         true,
-                        false,
+                        true,
                         EventPropertyParameter.EventOpen(),
                         new EventPropertyState(PropertyInstances.EventOpen, control.ToOpen()));
                     break;
@@ -38,7 +38,7 @@ internal static class PropertiesConverter
                     yield return new Property(
                         PropertyTypes.Float,
                         true,
-                        false,
+                        true,
                         FloatPropertyParameter.FloatHumidity(),
                         new FloatPropertyState(PropertyInstances.FloatHumidity, control.ToFloat()));
                     break;
@@ -47,7 +47,7 @@ internal static class PropertiesConverter
                     yield return new Property(
                         PropertyTypes.Float,
                         true,
-                        false,
+                        true,
                         FloatPropertyParameter.FloatIllumination(),
                         new FloatPropertyState(PropertyInstances.FloatIllumination, control.ToFloat()));
                     break;
@@ -56,7 +56,7 @@ internal static class PropertiesConverter
                     yield return new Property(
                         PropertyTypes.Event,
                         true,
-                        false,
+                        true,
                         EventPropertyParameter.EventMotion(),
                         new EventPropertyState(PropertyInstances.EventMotion, control.ToMotion()));
                     break;
@@ -65,7 +65,7 @@ internal static class PropertiesConverter
                     yield return new Property(
                         PropertyTypes.Float,
                         true,
-                        false,
+                        true,
                         FloatPropertyParameter.FloatTemperatureCelsius(),
                         new FloatPropertyState(PropertyInstances.FloatTemperature, control.ToFloat()));
                     break;
@@ -74,7 +74,7 @@ internal static class PropertiesConverter
                     yield return new Property(
                         PropertyTypes.Float,
                         true,
-                        false,
+                        true,
                         FloatPropertyParameter.FloatTvoc(),
                         new FloatPropertyState(PropertyInstances.FloatTvoc, control.ToFloat()));
                     break;

@@ -77,7 +77,7 @@ internal sealed class Startup
             .SetupApplication();
 
         services
-            .AddHostedService<HomeInitializationBackgroundService>()
+            .AddHostedService<InitializationBackgroundService>()
             //.AddMqttHandler<LogZigbee2MqttEventsHandler>(new QueueConnection("zigbee2mqtt/+", "test"))
             .AddMqttHandler<SaveTelemetryHandler>(new QueueConnection("/devices/+/controls/+", "db"))
             .AddMqttHandler<MqttDevicesControlsMetricsHandler>(new QueueConnection("/devices/+/controls/+", "prometheus"))

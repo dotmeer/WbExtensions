@@ -5,7 +5,9 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using WbExtensions.Application.Interfaces.Database;
 using WbExtensions.Application.Interfaces.Yandex;
+using WbExtensions.Domain;
 using WbExtensions.Infrastructure.Yandex.Models;
 using WbExtensions.Infrastructure.Yandex.Settings;
 
@@ -14,17 +16,18 @@ namespace WbExtensions.Infrastructure.Yandex.Implementations;
 internal sealed class UserService : IUserService
 {
     private readonly IHttpClientFactory _httpClientFactory;
-
     private readonly UserServiceSettings _settings;
-
+    private readonly IUserInfoRepository _userInfoRepository;
     private readonly ConcurrentDictionary<string, YandexUserInfo> _users;
     
     public UserService(
         IHttpClientFactory httpClientFactory, 
-        UserServiceSettings settings)
+        UserServiceSettings settings,
+        IUserInfoRepository userInfoRepository)
     {
         _httpClientFactory = httpClientFactory;
         _settings = settings;
+        _userInfoRepository = userInfoRepository;
         _users = new ConcurrentDictionary<string, YandexUserInfo>();
     }
 
@@ -57,6 +60,10 @@ internal sealed class UserService : IUserService
             token,
             _ => userInfo,
             (t, v) => userInfo);
+
+        await _userInfoRepository.UpsertAsync(
+            new UserInfo(userInfo.Id, userInfo.DefaultEmail, DateTime.UtcNow),
+            cancellationToken);
 
         return userInfo.Id;
     }
