@@ -18,40 +18,12 @@ internal static class CapabilitiesConverter
             switch (control.Type)
             {
                 case ControlType.Switch:
-                    yield return new Capability(
-                        CapabilityTypes.OnOff,
-                        true,
-                        true,
-                        new OnOffCapabilityParameter(false),
-                        new OnOffCapabilityState
-                        {
-                            Value = control.IsEnabled()
-                        });
+                    yield return Capability.CreateOnOffCapability(control.IsEnabled());
                     break;
 
                 case ControlType.Position:
-                    yield return new Capability(
-                        CapabilityTypes.Range,
-                        true,
-                        true,
-                        new RangeCapabilityParameter(
-                            "open",
-                            "unit.percent",
-                            true,
-                            new RangeCapabilityParameterRange(0, 100, 10)),
-                        new RangeCapabilityState("open")
-                        {
-                            Value = control.ToDouble()
-                        });
-                    yield return new Capability(
-                        CapabilityTypes.OnOff,
-                        true,
-                        true,
-                        new OnOffCapabilityParameter(false),
-                        new OnOffCapabilityState
-                        {
-                            Value = control.IsOpen()
-                        });
+                    yield return Capability.CreateRangeCapability(control.ToDouble());
+                    yield return Capability.CreateOnOffCapability(control.IsOpen());
                     break;
             }
         }

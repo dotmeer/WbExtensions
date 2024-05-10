@@ -41,4 +41,18 @@ on conflict ({nameof(UserInfo.Id)}) do nothing;",
 
         return _baseRepository.ExecuteAsync(command);
     }
+
+    public Task RemoveAsync(string userId, CancellationToken cancellationToken)
+    {
+        var command = new CommandDefinition($@"
+delete from {nameof(UserInfo)} 
+where {nameof(UserInfo.Id)} = @{nameof(userId)}",
+            new
+            {
+                userId
+            },
+            cancellationToken: cancellationToken);
+
+        return _baseRepository.ExecuteAsync(command);
+    }
 }

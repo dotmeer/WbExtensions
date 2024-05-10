@@ -11,4 +11,6 @@ public interface IUserService
     /// <param name="token">Токен авторизации</param>
     /// <param name="cancellationToken"><see cref="CancellationToken"/></param>
     Task<string?> GetUserIdAsync(string? token, CancellationToken cancellationToken);
+
+    Task RemoveAsync(string? token, CancellationToken cancellationToken);
 }

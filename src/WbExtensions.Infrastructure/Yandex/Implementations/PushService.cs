@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using WbExtensions.Application.Interfaces.Yandex;
 using WbExtensions.Domain.Alice.Push;
+using WbExtensions.Infrastructure.Json;
 using WbExtensions.Infrastructure.Yandex.Settings;
 
 namespace WbExtensions.Infrastructure.Yandex.Implementations;
@@ -33,7 +35,7 @@ internal sealed class PushService : IPushService
             var httpRequest = new HttpRequestMessage(
                 HttpMethod.Post,
                 $"https://dialogs.yandex.net/api/v1/skills/{_settings.SkillId}/callback/state");
-            httpRequest.Content = JsonContent.Create(request);
+            httpRequest.Content = JsonContent.Create(request, options: new JsonSerializerOptions().Configure());
             httpRequest.Headers.Add("Authorization", $"OAuth {_settings.Token}");
 
             using var httpClient = _httpClientFactory.CreateClient();

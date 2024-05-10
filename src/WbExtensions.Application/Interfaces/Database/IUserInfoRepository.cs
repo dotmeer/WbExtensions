@@ -10,4 +10,6 @@ public interface IUserInfoRepository
     Task<IReadOnlyCollection<UserInfo>> GetAsync(CancellationToken cancellationToken);
 
     Task UpsertAsync(UserInfo user, CancellationToken cancellationToken);
+
+    Task RemoveAsync(string userId, CancellationToken cancellationToken);
 }

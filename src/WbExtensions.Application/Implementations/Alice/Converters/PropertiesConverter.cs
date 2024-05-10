@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using WbExtensions.Domain.Alice.Constants;
 using WbExtensions.Domain.Alice.Parameters;
 using WbExtensions.Domain.Home;
 using WbExtensions.Domain.Home.Enums;
@@ -17,66 +16,31 @@ internal static class PropertiesConverter
             switch (control.Type)
             {
                 case ControlType.Co2:
-                    yield return new Property(
-                        PropertyTypes.Float,
-                        true,
-                        true,
-                        FloatPropertyParameter.FloatCo2Level(),
-                        new FloatPropertyState(PropertyInstances.FloatCo2Level, control.ToFloat()));
+                    yield return Property.CreateCo2LevelProperty(control.ToFloat());
                     break;
 
                 case ControlType.Contact:
-                    yield return new Property(
-                        PropertyTypes.Event,
-                        true,
-                        true,
-                        EventPropertyParameter.EventOpen(),
-                        new EventPropertyState(PropertyInstances.EventOpen, control.ToOpen()));
+                    yield return Property.CreateOpenEventProperty(control.ToOpen());
                     break;
 
                 case ControlType.Humidity:
-                    yield return new Property(
-                        PropertyTypes.Float,
-                        true,
-                        true,
-                        FloatPropertyParameter.FloatHumidity(),
-                        new FloatPropertyState(PropertyInstances.FloatHumidity, control.ToFloat()));
+                    yield return Property.CreateHumidityProperty(control.ToFloat());
                     break;
 
                 case ControlType.Illuminance:
-                    yield return new Property(
-                        PropertyTypes.Float,
-                        true,
-                        true,
-                        FloatPropertyParameter.FloatIllumination(),
-                        new FloatPropertyState(PropertyInstances.FloatIllumination, control.ToFloat()));
+                    yield return Property.CreateIlluminanceProperty(control.ToFloat());
                     break;
 
                 case ControlType.Occupancy:
-                    yield return new Property(
-                        PropertyTypes.Event,
-                        true,
-                        true,
-                        EventPropertyParameter.EventMotion(),
-                        new EventPropertyState(PropertyInstances.EventMotion, control.ToMotion()));
+                    yield return Property.CreateMotionEventProperty(control.ToMotion());
                     break;
 
                 case ControlType.Temperature:
-                    yield return new Property(
-                        PropertyTypes.Float,
-                        true,
-                        true,
-                        FloatPropertyParameter.FloatTemperatureCelsius(),
-                        new FloatPropertyState(PropertyInstances.FloatTemperature, control.ToFloat()));
+                    yield return Property.CreateTemperatureProperty(control.ToFloat());
                     break;
 
                 case ControlType.Voc:
-                    yield return new Property(
-                        PropertyTypes.Float,
-                        true,
-                        true,
-                        FloatPropertyParameter.FloatTvoc(),
-                        new FloatPropertyState(PropertyInstances.FloatTvoc, control.ToFloat()));
+                    yield return Property.CreateVocLevelProperty(control.ToFloat());
                     break;
             }
         }

@@ -68,6 +68,15 @@ internal sealed class UserService : IUserService
         return userInfo.Id;
     }
 
+    public async Task RemoveAsync(string? token, CancellationToken cancellationToken)
+    {
+        if (!string.IsNullOrEmpty(token)
+            && _users.TryRemove(token.ToString().Replace("Bearer ", ""), out var userInfo))
+        {
+            await _userInfoRepository.RemoveAsync(userInfo.Id, cancellationToken);
+        }
+    }
+
     private async Task<YandexUserInfo?> GetInfoAsync(string token, CancellationToken cancellationToken)
     {
         var request = new HttpRequestMessage(

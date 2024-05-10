@@ -1,6 +1,9 @@
-﻿namespace WbExtensions.Domain.Alice.Capabilities;
+﻿using WbExtensions.Domain.Alice.Capabilities.OnOff;
+using WbExtensions.Domain.Alice.Capabilities.Range;
+using WbExtensions.Domain.Alice.Constants;
 
-// TODO: фабрика для умений
+namespace WbExtensions.Domain.Alice.Capabilities;
+
 public sealed class Capability
 {
     public Capability(
@@ -47,5 +50,35 @@ public sealed class Capability
             null,
             null,
             State?.GetCopy());
+    }
+
+    public static Capability CreateOnOffCapability(bool value)
+    {
+        return new Capability(
+            CapabilityTypes.OnOff,
+            true,
+            true,
+            new OnOffCapabilityParameter(false),
+            new OnOffCapabilityState
+            {
+                Value = value
+            });
+    }
+
+    public static Capability CreateRangeCapability(double value, double precision = 10)
+    {
+        return new Capability(
+            CapabilityTypes.Range,
+            true,
+            true,
+            new RangeCapabilityParameter(
+                "open",
+                "unit.percent",
+                true,
+                new RangeCapabilityParameterRange(0, 100, precision)),
+            new RangeCapabilityState("open")
+            {
+                Value = value
+            });
     }
 }
