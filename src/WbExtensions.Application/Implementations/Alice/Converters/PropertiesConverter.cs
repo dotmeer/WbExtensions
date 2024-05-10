@@ -10,7 +10,6 @@ namespace WbExtensions.Application.Implementations.Alice.Converters;
 
 internal static class PropertiesConverter
 {
-    // TODO: push changes to yandex
     public static IEnumerable<Property> ToProperties(this IReadOnlyCollection<Control> controls)
     {
         foreach (var control in controls)
@@ -82,7 +81,7 @@ internal static class PropertiesConverter
             }
         }
     }
-
+    
     private static double ToFloat(this Control control)
     {
         return double.TryParse(control.Value, NumberFormatInfo.InvariantInfo, out var value)

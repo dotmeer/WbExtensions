@@ -3,20 +3,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using WbExtensions.Application.Interfaces.Home;
+using WbExtensions.Application.Interfaces.Alice;
 
 namespace WbExtensions.Service.BackgroundServices;
 
 internal sealed class HomeInitializationBackgroundService : BackgroundService
 {
-    private readonly IDevicesRepository _devicesRepository;
+    private readonly IAliceDevicesManager _aliceDevicesManager;
     private readonly ILogger<HomeInitializationBackgroundService> _logger;
 
     public HomeInitializationBackgroundService(
-        IDevicesRepository devicesRepository,
+        IAliceDevicesManager aliceDevicesManager,
         ILogger<HomeInitializationBackgroundService> logger)
     {
-        _devicesRepository = devicesRepository;
+        _aliceDevicesManager = aliceDevicesManager;
         _logger = logger;
     }
 
@@ -24,7 +24,7 @@ internal sealed class HomeInitializationBackgroundService : BackgroundService
     {
         try
         {
-            await _devicesRepository.InitAsync(stoppingToken);
+            await _aliceDevicesManager.InitAsync(stoppingToken);
         }
         catch (Exception ex)
         {

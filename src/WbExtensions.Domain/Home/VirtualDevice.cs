@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using WbExtensions.Domain.Home.Enums;
 
 namespace WbExtensions.Domain.Home;
 
@@ -10,7 +9,7 @@ public sealed class VirtualDevice
 
     public string Id { get; init; } = default!;
 
-    public VirtualDeviceType Type { get; init; }
+    public string Type { get; init; } = default!;
 
     public string Name { get; init; } = default!;
 

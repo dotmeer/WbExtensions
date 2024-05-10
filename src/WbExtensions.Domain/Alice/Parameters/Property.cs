@@ -1,5 +1,6 @@
 ﻿namespace WbExtensions.Domain.Alice.Parameters;
 
+// TODO: подумать над фабричными методами для создания инстансов
 public sealed class Property
 {
     public Property(

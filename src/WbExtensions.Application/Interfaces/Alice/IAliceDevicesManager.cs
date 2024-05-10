@@ -6,8 +6,11 @@ using WbExtensions.Domain.Alice.Requests;
 
 namespace WbExtensions.Application.Interfaces.Alice;
 
-public interface IAliceDevicesService
+public interface IAliceDevicesManager
 {
+    Task InitAsync(
+        CancellationToken cancellationToken);
+
     Task<IList<Device>> GetAsync(
         CancellationToken cancellationToken);
 

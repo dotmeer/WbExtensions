@@ -13,8 +13,12 @@ public static class ApplicationExtensions
             .AddSingleton<LogZigbee2MqttEventsHandler>()
             .AddSingleton<MqttDevicesControlsMetricsHandler>()
             .AddSingleton<ParseZigbee2MqttEventsHandler>()
-            .AddSingleton<SaveTelemetryHandler>()
-            .AddSingleton<IAliceDevicesService, AliceDevicesService>();
+            .AddSingleton<SaveTelemetryHandler>();
+
+        services
+            .AddSingleton<AliceDevicesManager>()
+            .AddSingleton(sp => new InitializationFacade(sp.GetService<AliceDevicesManager>()!))
+            .AddSingleton<IAliceDevicesManager>(sp => sp.GetService<InitializationFacade>()!);
 
         return services;
     }

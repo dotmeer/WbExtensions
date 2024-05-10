@@ -15,11 +15,11 @@ namespace WbExtensions.Service.Controllers;
 [YandexAuthorization]
 public sealed class DevicesController : ControllerBase
 {
-    private readonly IAliceDevicesService _aliceDevicesService;
+    private readonly IAliceDevicesManager _aliceDevicesManager;
 
-    public DevicesController(IAliceDevicesService aliceDevicesService)
+    public DevicesController(IAliceDevicesManager aliceDevicesManager)
     {
-        _aliceDevicesService = aliceDevicesService;
+        _aliceDevicesManager = aliceDevicesManager;
     }
 
     [HttpGet("user/devices")]
@@ -33,7 +33,7 @@ public sealed class DevicesController : ControllerBase
             Payload = new Payload
             {
                 UserId = User.FindFirst(AuthConstants.UserIdClaim)!.Value,
-                Devices = await _aliceDevicesService.GetAsync(cancellationToken)
+                Devices = await _aliceDevicesManager.GetAsync(cancellationToken)
             }
         };
 
@@ -52,7 +52,7 @@ public sealed class DevicesController : ControllerBase
             Payload = new Payload
             {
                 UserId = User.FindFirst(AuthConstants.UserIdClaim)!.Value,
-                Devices = await _aliceDevicesService.GetAsync(
+                Devices = await _aliceDevicesManager.GetAsync(
                     request.Devices.Select(_ => _.Id).ToArray(),
                     cancellationToken)
             }
@@ -73,7 +73,7 @@ public sealed class DevicesController : ControllerBase
             Payload = new Payload
             {
                 UserId = User.FindFirst(AuthConstants.UserIdClaim)!.Value,
-                Devices = await _aliceDevicesService.UpdateDevicesStateAsync(
+                Devices = await _aliceDevicesManager.UpdateDevicesStateAsync(
                     request.Payload.Devices.ToList(),
                     cancellationToken)
             }
