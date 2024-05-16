@@ -11,7 +11,6 @@ using WbExtensions.Application.Interfaces.Mqtt;
 using WbExtensions.Application.Interfaces.Yandex;
 using WbExtensions.Domain.Alice;
 using WbExtensions.Domain.Alice.Capabilities;
-using WbExtensions.Domain.Alice.Parameters;
 using WbExtensions.Domain.Alice.Push;
 using WbExtensions.Domain.Alice.Requests;
 using WbExtensions.Domain.Home;
@@ -210,7 +209,8 @@ internal sealed class AliceDevicesManager : IAliceDevicesManager
     private bool TryGetControl(string virtualDeviceName, string virtualControlName, out VirtualDevice? virtualDevice, out Control? control)
     {
         virtualDevice = _devicesRepository.VirtualDevices
-            .FirstOrDefault(_ => _.VirtualDeviceName == virtualDeviceName);
+            .FirstOrDefault(_ => _.VirtualDeviceName == virtualDeviceName
+                                 && _.Controls.Any(c => c.VirtualControlName == virtualControlName));
         
         control = virtualDevice?.Controls
             .FirstOrDefault(_ => _.VirtualControlName == virtualControlName);

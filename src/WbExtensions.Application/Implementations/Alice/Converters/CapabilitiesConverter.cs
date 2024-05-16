@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using WbExtensions.Domain.Alice.Capabilities;
-using WbExtensions.Domain.Alice.Capabilities.OnOff;
-using WbExtensions.Domain.Alice.Capabilities.Range;
 using WbExtensions.Domain.Alice.Constants;
 using WbExtensions.Domain.Home;
 using WbExtensions.Domain.Home.Enums;
