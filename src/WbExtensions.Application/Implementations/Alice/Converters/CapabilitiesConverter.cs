@@ -16,12 +16,12 @@ internal static class CapabilitiesConverter
             switch (control.Type)
             {
                 case ControlType.Switch:
-                    yield return Capability.CreateOnOffCapability(control.IsEnabled());
+                    yield return Capability.CreateOnOffCapability(control.IsEnabled(), control.Reportable);
                     break;
 
                 case ControlType.Position:
-                    yield return Capability.CreateRangeCapability(control.ToDouble());
-                    yield return Capability.CreateOnOffCapability(control.IsOpen());
+                    yield return Capability.CreateRangeCapability(control.ToDouble(), control.Reportable);
+                    yield return Capability.CreateOnOffCapability(control.IsOpen(), control.Reportable);
                     break;
             }
         }

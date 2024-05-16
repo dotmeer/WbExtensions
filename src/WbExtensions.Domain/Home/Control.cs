@@ -8,5 +8,7 @@ public sealed class Control
 
     public ControlType Type { get; init; }
 
+    public bool Reportable { get; init; } = true;
+
     public string Value { get; set; } = default!;
 }

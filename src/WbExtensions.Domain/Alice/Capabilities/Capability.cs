@@ -52,12 +52,12 @@ public sealed class Capability
             State?.GetCopy());
     }
 
-    public static Capability CreateOnOffCapability(bool value)
+    public static Capability CreateOnOffCapability(bool value, bool reportable)
     {
         return new Capability(
             CapabilityTypes.OnOff,
             true,
-            true,
+            reportable,
             new OnOffCapabilityParameter(false),
             new OnOffCapabilityState
             {
@@ -65,12 +65,12 @@ public sealed class Capability
             });
     }
 
-    public static Capability CreateRangeCapability(double value, double precision = 10)
+    public static Capability CreateRangeCapability(double value, bool reportable, double precision = 10)
     {
         return new Capability(
             CapabilityTypes.Range,
             true,
-            true,
+            reportable,
             new RangeCapabilityParameter(
                 "open",
                 "unit.percent",

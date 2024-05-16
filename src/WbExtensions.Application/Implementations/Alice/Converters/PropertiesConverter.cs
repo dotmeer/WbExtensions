@@ -16,31 +16,31 @@ internal static class PropertiesConverter
             switch (control.Type)
             {
                 case ControlType.Co2:
-                    yield return Property.CreateCo2LevelProperty(control.ToFloat());
+                    yield return Property.CreateCo2LevelProperty(control.ToFloat(), control.Reportable);
                     break;
 
                 case ControlType.Contact:
-                    yield return Property.CreateOpenEventProperty(control.ToOpen());
+                    yield return Property.CreateOpenEventProperty(control.ToOpen(), control.Reportable);
                     break;
 
                 case ControlType.Humidity:
-                    yield return Property.CreateHumidityProperty(control.ToFloat());
+                    yield return Property.CreateHumidityProperty(control.ToFloat(), control.Reportable);
                     break;
 
                 case ControlType.Illuminance:
-                    yield return Property.CreateIlluminanceProperty(control.ToFloat());
+                    yield return Property.CreateIlluminanceProperty(control.ToFloat(), control.Reportable);
                     break;
 
                 case ControlType.Occupancy:
-                    yield return Property.CreateMotionEventProperty(control.ToMotion());
+                    yield return Property.CreateMotionEventProperty(control.ToMotion(), control.Reportable);
                     break;
 
                 case ControlType.Temperature:
-                    yield return Property.CreateTemperatureProperty(control.ToFloat());
+                    yield return Property.CreateTemperatureProperty(control.ToFloat(), control.Reportable);
                     break;
 
                 case ControlType.Voc:
-                    yield return Property.CreateVocLevelProperty(control.ToFloat());
+                    yield return Property.CreateVocLevelProperty(control.ToFloat(), control.Reportable);
                     break;
             }
         }

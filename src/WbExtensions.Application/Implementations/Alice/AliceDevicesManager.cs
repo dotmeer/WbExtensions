@@ -151,7 +151,11 @@ internal sealed class AliceDevicesManager : IAliceDevicesManager
             if(control!.Value != message.Payload)
             {
                 control.Value = message.Payload!;
-                await PushUpdateToYandexAsync(virtualDevice!, control, cancellationToken);
+
+                if(control.Reportable)
+                {
+                    await PushUpdateToYandexAsync(virtualDevice!, control, cancellationToken);
+                }
             }
         }
     }

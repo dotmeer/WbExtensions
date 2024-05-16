@@ -37,72 +37,72 @@ public sealed class Property
 
     public PropertyState State { get; }
 
-    public static Property CreateCo2LevelProperty(double value)
+    public static Property CreateCo2LevelProperty(double value, bool reportable)
     {
         return new Property(
             PropertyTypes.Float,
             true,
-            true,
+            reportable,
             FloatPropertyParameter.FloatCo2Level(),
             new FloatPropertyState(PropertyInstances.FloatCo2Level, value));
     }
 
-    public static Property CreateOpenEventProperty(string value)
+    public static Property CreateOpenEventProperty(string value, bool reportable)
     {
         return new Property(
             PropertyTypes.Event,
             true,
-            true,
+            reportable,
             EventPropertyParameter.EventOpen(),
             new EventPropertyState(PropertyInstances.EventOpen, value));
     }
 
-    public static Property CreateHumidityProperty(double value)
+    public static Property CreateHumidityProperty(double value, bool reportable)
     {
         return new Property(
             PropertyTypes.Float,
             true,
-            true,
+            reportable,
             FloatPropertyParameter.FloatHumidity(),
             new FloatPropertyState(PropertyInstances.FloatHumidity, value));
     }
 
-    public static Property CreateIlluminanceProperty(double value)
+    public static Property CreateIlluminanceProperty(double value, bool reportable)
     {
         return new Property(
             PropertyTypes.Float,
             true,
-            true,
+            reportable,
             FloatPropertyParameter.FloatIllumination(),
             new FloatPropertyState(PropertyInstances.FloatIllumination, value));
     }
 
-    public static Property CreateMotionEventProperty(string value)
+    public static Property CreateMotionEventProperty(string value, bool reportable)
     {
         return new Property(
             PropertyTypes.Event,
             true,
-            true,
+            reportable,
             EventPropertyParameter.EventMotion(),
             new EventPropertyState(PropertyInstances.EventMotion, value));
     }
 
-    public static Property CreateTemperatureProperty(double value)
+    public static Property CreateTemperatureProperty(double value, bool reportable)
     {
         return new Property(
             PropertyTypes.Float,
             true,
-            true,
+            reportable,
             FloatPropertyParameter.FloatTemperatureCelsius(),
             new FloatPropertyState(PropertyInstances.FloatTemperature, value));
     }
 
-    public static Property CreateVocLevelProperty(double value)
+    public static Property CreateVocLevelProperty(double value, bool reportable)
     {
         return new Property(
             PropertyTypes.Float,
             true,
-            true,
+            reportable,
             FloatPropertyParameter.FloatTvoc(),
             new FloatPropertyState(PropertyInstances.FloatTvoc, value));
     }
