@@ -21,7 +21,7 @@ internal static class CapabilitiesConverter
 
                 case ControlType.Position:
                     yield return Capability.CreateRangeCapability(control.ToDouble(), control.Reportable);
-                    yield return Capability.CreateOnOffCapability(control.IsOpen(), control.Reportable);
+                    yield return Capability.CreateOnOffCapability(control.IsOpen(), control.Reportable, true);
                     break;
             }
         }

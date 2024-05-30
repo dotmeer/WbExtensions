@@ -52,13 +52,13 @@ public sealed class Capability
             State?.GetCopy());
     }
 
-    public static Capability CreateOnOffCapability(bool value, bool reportable)
+    public static Capability CreateOnOffCapability(bool value, bool reportable, bool split = false)
     {
         return new Capability(
             CapabilityTypes.OnOff,
             true,
             reportable,
-            new OnOffCapabilityParameter(false),
+            new OnOffCapabilityParameter(split),
             new OnOffCapabilityState
             {
                 Value = value

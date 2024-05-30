@@ -39,8 +39,6 @@ public sealed class LoggingMiddleware : IMiddleware
         {
             return;
         }
-
-        context.Request.Headers.TryGetValue("Authorization", out var authHeader);
         
         _logger.LogInformation("{Method} {Path}{Query} - {StatusCode} - Body: {Body}.",
             context.Request.Method,

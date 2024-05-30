@@ -3,11 +3,11 @@
 ## Публикация и развертывание
 
 публикация докер-образа:   
-`docker build -t dotmeer/wbextensions:{tag} . -f WbExtensions.Service/Dockerfile`   
-`docker login`   
-`docker push dotmeer/wbextensions:{tag}`
+`docker build -t cr.yandex/{registry}/wbextensions:{tag} . -f WbExtensions.Service/Dockerfile`
+`docker push cr.yandex/{registry}/wbextensions:{tag}`
 
-перекачиваем образ в NAS, там docker-compose
+не забывать логиниться в яндекс через консоль
+перекачиваем образ в NAS, там docker-compose с прямым адресом образа
 
 ## Roadmap проекта
 
@@ -15,3 +15,5 @@
 
 * метрики через OpenTelemetry вместо prometheus-net, но отдавать в prometheus, подумать о трейсах. после окончательного релиза
 * бот для оповещений WB
+* однострочные логи
+* виртуальные устройства храним в памяти (Application.DevicesManager), через DI в менеджере хэндлеры событий (в БД, в метрики, в яндекс), AliceDevicesManager - становится плослойкой-фасадом для конвертации данных
