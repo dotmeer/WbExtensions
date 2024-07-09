@@ -29,6 +29,8 @@ internal sealed class DatabaseMigrator : IDatabaseMigrator
             {
                 await migration.MigrateAsync(_connectionFactory.Create(), cancellationToken);
             }
+
+            _inited = true;
         }
     }
 }

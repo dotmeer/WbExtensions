@@ -6,7 +6,6 @@ using WbExtensions.Application.Helpers;
 using WbExtensions.Application.Implementations.Alice.Converters;
 using WbExtensions.Application.Interfaces.Alice;
 using WbExtensions.Application.Interfaces.Database;
-using WbExtensions.Application.Interfaces.Home;
 using WbExtensions.Application.Interfaces.Mqtt;
 using WbExtensions.Application.Interfaces.Yandex;
 using WbExtensions.Domain.Alice;
@@ -22,28 +21,28 @@ namespace WbExtensions.Application.Implementations.Alice;
 internal sealed class AliceDevicesManager : IAliceDevicesManager
 {
     private const string MqttClientName = "alice_devices_manager";
-
+    
     private readonly IMqttService _mqttService;
-    private readonly IDevicesRepository _devicesRepository;
     private readonly ITelemetryRepository _telemetryRepository;
     private readonly IUserInfoRepository _userInfoRepository;
     private readonly IPushService _pushService;
 
+    private readonly IReadOnlyCollection<VirtualDevice> _virtualDevices;
     private bool _inited;
 
     public AliceDevicesManager(
+        DevicesSchema schema,
         IMqttService mqttService, 
-        IDevicesRepository devicesRepository,
         ITelemetryRepository telemetryRepository,
         IUserInfoRepository userInfoRepository,
         IPushService pushService)
     {
         _mqttService = mqttService;
-        _devicesRepository = devicesRepository;
         _telemetryRepository = telemetryRepository;
         _userInfoRepository = userInfoRepository;
         _pushService = pushService;
 
+        _virtualDevices = schema.Devices;
         _inited = false;
     }
 
@@ -53,7 +52,7 @@ internal sealed class AliceDevicesManager : IAliceDevicesManager
         {
             var telemetryValues = await _telemetryRepository.GetAsync(cancellationToken);
 
-            foreach (var device in _devicesRepository.VirtualDevices)
+            foreach (var device in _virtualDevices)
             {
                 foreach (var control in device.Controls)
                 {
@@ -81,7 +80,7 @@ internal sealed class AliceDevicesManager : IAliceDevicesManager
         CancellationToken cancellationToken)
     {
         return Task.FromResult<IList<Device>>(
-            _devicesRepository.VirtualDevices
+            _virtualDevices
                 .ToDevices()
                 .ToList());
     }
@@ -91,7 +90,7 @@ internal sealed class AliceDevicesManager : IAliceDevicesManager
         CancellationToken cancellationToken)
     {
         return Task.FromResult<IList<Device>>(
-            _devicesRepository.VirtualDevices
+            _virtualDevices
                 .Where(_ => ids.Contains(_.Id))
                 .ToDevices()
                 .ToList());
@@ -212,7 +211,7 @@ internal sealed class AliceDevicesManager : IAliceDevicesManager
 
     private bool TryGetControl(string virtualDeviceName, string virtualControlName, out VirtualDevice? virtualDevice, out Control? control)
     {
-        virtualDevice = _devicesRepository.VirtualDevices
+        virtualDevice = _virtualDevices
             .FirstOrDefault(_ => _.VirtualDeviceName == virtualDeviceName
                                  && _.Controls.Any(c => c.VirtualControlName == virtualControlName));
         

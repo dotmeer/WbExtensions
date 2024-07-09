@@ -19,7 +19,7 @@ public static class InfrastructureExtensions
             .SetupMetrics()
             .SetupMqtt(configuration)
             .SetupYandex(configuration)
-            .SetupHome();
+            .SetupHome(configuration);
 
         return services;
     }
