@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -22,7 +23,16 @@ public static class InfrastructureLoggingExtensions
         builder.ConfigureLogging(loggingBuilder =>
         {
             loggingBuilder.ClearProviders();
-            loggingBuilder.AddConsole();
+            loggingBuilder.AddJsonConsole(_ =>
+            {
+                _.TimestampFormat = "O";
+                _.UseUtcTimestamp = true;
+                _.IncludeScopes = true;
+                _.JsonWriterOptions = new JsonWriterOptions
+                {
+                    Indented = false
+                };
+            });
             loggingBuilder.AddMetricsLogger();
         });
 
