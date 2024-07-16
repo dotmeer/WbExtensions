@@ -8,6 +8,7 @@ using WbExtensions.Application.Interfaces.Alice;
 using WbExtensions.Application.Interfaces.Database;
 using WbExtensions.Application.Interfaces.Mqtt;
 using WbExtensions.Application.Interfaces.Yandex;
+using WbExtensions.Domain;
 using WbExtensions.Domain.Alice;
 using WbExtensions.Domain.Alice.Capabilities;
 using WbExtensions.Domain.Alice.Push;
@@ -56,13 +57,13 @@ internal sealed class AliceDevicesManager : IAliceDevicesManager
             {
                 foreach (var control in device.Controls)
                 {
-                    var telemetry = telemetryValues.FirstOrDefault(_ =>
+                    Telemetry? telemetry = telemetryValues.FirstOrDefault(_ =>
                         _.Device == device.VirtualDeviceName
                         && _.Control == control.VirtualControlName);
 
-                    if (telemetry is not null)
+                    if (telemetry.HasValue)
                     {
-                        control.Value = telemetry.Value;
+                        control.Value = telemetry.Value.Value;
                     }
                 }
             }
@@ -147,11 +148,12 @@ internal sealed class AliceDevicesManager : IAliceDevicesManager
 
         if (TryGetControl(virtualDeviceName, virtualControlName, out var virtualDevice, out var control))
         {
-            if(control!.Value != message.Payload)
+            if (control!.Value != message.Payload
+                && message.Payload is not null)
             {
                 control.Value = message.Payload!;
 
-                if(control.Reportable)
+                if (control.Reportable)
                 {
                     await PushUpdateToYandexAsync(virtualDevice!, control, cancellationToken);
                 }
@@ -197,11 +199,11 @@ internal sealed class AliceDevicesManager : IAliceDevicesManager
                         break;
                 }
 
-                if (connection is not null && controlValue is not null)
+                if (connection.HasValue && controlValue is not null)
                 {
                     control.Value = controlValue;
                     await _mqttService.PublishAsync(
-                        connection,
+                        connection.Value,
                         controlValue,
                         cancellationToken);
                 }

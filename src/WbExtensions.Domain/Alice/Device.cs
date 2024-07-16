@@ -23,12 +23,4 @@ public sealed class Device
     public IList<Capability> Capabilities { get; init; } = new List<Capability>(0);
 
     public IList<Property> Properties { get; init; } = new List<Property>(0);
-
-    public Device GetUpdatedDevice()
-    {
-        return new Device
-        {
-            Id = Id
-        };
-    }
 }
