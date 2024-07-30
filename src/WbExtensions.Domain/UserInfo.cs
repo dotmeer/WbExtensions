@@ -2,4 +2,4 @@
 
 namespace WbExtensions.Domain;
 
-public record struct UserInfo(string Id, string Email, DateTime Updated);
+public sealed record UserInfo(string Id, string Email, DateTime Updated);

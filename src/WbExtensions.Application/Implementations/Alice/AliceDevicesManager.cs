@@ -8,7 +8,6 @@ using WbExtensions.Application.Interfaces.Alice;
 using WbExtensions.Application.Interfaces.Database;
 using WbExtensions.Application.Interfaces.Mqtt;
 using WbExtensions.Application.Interfaces.Yandex;
-using WbExtensions.Domain;
 using WbExtensions.Domain.Alice;
 using WbExtensions.Domain.Alice.Capabilities;
 using WbExtensions.Domain.Alice.Push;
@@ -57,13 +56,13 @@ internal sealed class AliceDevicesManager : IAliceDevicesManager
             {
                 foreach (var control in device.Controls)
                 {
-                    Telemetry? telemetry = telemetryValues.FirstOrDefault(_ =>
+                    var telemetry = telemetryValues.FirstOrDefault(_ =>
                         _.Device == device.VirtualDeviceName
                         && _.Control == control.VirtualControlName);
 
-                    if (telemetry.HasValue)
+                    if (telemetry is not null)
                     {
-                        control.Value = telemetry.Value.Value;
+                        control.Value = telemetry.Value;
                     }
                 }
             }
@@ -167,44 +166,39 @@ internal sealed class AliceDevicesManager : IAliceDevicesManager
         {
             if (TryGetControl(command.Device, command.Control, out var virtualDevice, out var control))
             {
-                QueueConnection? connection;
-                string? controlValue;
+                string? topic;
+                string? message;
 
                 switch (control!.Type)
                 {
                     case ControlType.Switch:
-                        connection = new QueueConnection(
-                            $"/devices/{command.Device}/controls/{command.Control}/on",
-                            MqttClientName);
-                        controlValue = (bool)command.Value ? "1" : "0";
+                        topic = $"/devices/{command.Device}/controls/{command.Control}/on";
+                        message = control.Value = (bool)command.Value ? "1" : "0";
                         break;
 
                     case ControlType.Position:
-                        connection = new QueueConnection(
-                            $"zigbee2mqtt/{command.Device}/set",
-                            MqttClientName);
-                        controlValue = $"{{\"position\": {command.Value}}}";
+                        topic = $"zigbee2mqtt/{command.Device}/set";
+                        control.Value = command.Value.ToString()!;
+                        message = $"{{\"position\": {control.Value}}}";
                         break;
 
                     case ControlType.CurtainState:
-                        connection = new QueueConnection(
-                            $"zigbee2mqtt/{command.Device}/set",
-                            MqttClientName);
-                        controlValue = $"{{\"state\": \"{((bool)command.Value ? "OPEN" : "CLOSE")}\"}}";
+                        topic = $"zigbee2mqtt/{command.Device}/set";
+                        control.Value = (bool)command.Value ? "OPEN" : "CLOSE";
+                        message = $"{{\"state\": \"{control.Value}\"}}";
                         break;
 
                     default:
-                        connection = null;
-                        controlValue = null;
+                        topic = null;
+                        message = null;
                         break;
                 }
 
-                if (connection.HasValue && controlValue is not null)
+                if (topic is not null && message is not null)
                 {
-                    control.Value = controlValue;
                     await _mqttService.PublishAsync(
-                        connection.Value,
-                        controlValue,
+                        new QueueConnection(topic, MqttClientName),
+                        message,
                         cancellationToken);
                 }
             }
