@@ -20,8 +20,10 @@ internal static class InfrastructureYandexExtensions
             .AddSingleton(userServiceSettings)
             .AddSingleton(pushServiceSettings)
             .AddHttpClient()
-            .AddSingleton<IUserService, UserService>()
-            .AddSingleton<IPushService, PushService>();
+            .AddSingleton<IPushService, PushService>()
+            .AddSingleton<IUsersCache, UsersCache>()
+            .AddSingleton<IAllowedUsersService, AllowedUsersService>()
+            .AddSingleton<IYandexUserInfoClient, YandexUserInfoClient>();
 
         return services;
     }

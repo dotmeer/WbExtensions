@@ -2,6 +2,8 @@
 using WbExtensions.Application.Handlers;
 using WbExtensions.Application.UseCases.ExecuteAliceCommands;
 using WbExtensions.Application.UseCases.GetDevicesForAlice;
+using WbExtensions.Application.UseCases.GetUserId;
+using WbExtensions.Application.UseCases.RemoveUser;
 using WbExtensions.Application.UseCases.UpdateVirtualDeviceState;
 
 namespace WbExtensions.Application;
@@ -18,7 +20,9 @@ public static class ApplicationExtensions
         services
             .AddSingleton<GetDevicesForAliceHandler>()
             .AddSingleton<ExecuteAliceCommandsHandler>()
-            .AddSingleton<UpdateVirtualDeviceStateHandler>();
+            .AddSingleton<UpdateVirtualDeviceStateHandler>()
+            .AddSingleton<RemoveUserHandler>()
+            .AddSingleton<GetUserIdHandler>();
 
         return services;
     }

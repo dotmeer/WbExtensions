@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace WbExtensions.Infrastructure.Yandex.Models;
+namespace WbExtensions.Application.Models.Yandex;
 
-internal sealed class YandexUserInfo
+public sealed class YandexUserInfo
 {
     [JsonPropertyName("id")]
     public string Id { get; init; } = default!;

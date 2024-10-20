@@ -14,4 +14,8 @@
         <ProjectReference Include="..\WbExtensions.Domain\WbExtensions.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="UseCases\GetUserId\" />
+    </ItemGroup>
+
 </Project>

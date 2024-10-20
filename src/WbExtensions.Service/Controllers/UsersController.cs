@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using WbExtensions.Application.Interfaces.Yandex;
+using WbExtensions.Application.UseCases.RemoveUser;
 using WbExtensions.Domain.Alice.Responses;
 using WbExtensions.Service.Authorization;
 
@@ -13,20 +13,14 @@ namespace WbExtensions.Service.Controllers;
 [YandexAuthorization]
 public sealed class UsersController : ControllerBase
 {
-    private readonly IUserService _userService;
-
-    public UsersController(IUserService userService)
-    {
-        _userService = userService;
-    }
-
     [HttpPost("user/unlink")]
     public async Task<IActionResult> UnlinkUserAsync(
         [FromHeader(Name = "X-Request-Id")] string? requestId,
         [FromHeader(Name = AuthConstants.AuthHeaderName)] string? token,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        [FromServices] RemoveUserHandler handler)
     {
-        await _userService.RemoveAsync(token, cancellationToken);
+        await handler.HandleAsync(new RemoveUserRequest(token), cancellationToken);
 
         return Ok(
             new AliceResponse

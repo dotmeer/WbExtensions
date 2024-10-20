@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
-using WbExtensions.Application.Interfaces.Yandex;
+using WbExtensions.Application.UseCases.GetUserId;
 
 namespace WbExtensions.Service.Authorization;
 
@@ -13,12 +13,12 @@ internal sealed class YandexAuthorizationAttribute : Attribute, IAsyncAuthorizat
 {
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
-        var userService = context.HttpContext.RequestServices.GetService<IUserService>()!;
+        var handler = context.HttpContext.RequestServices.GetService<GetUserIdHandler>()!;
 
         if (context.HttpContext.Request.Headers.TryGetValue(AuthConstants.AuthHeaderName, out var authHeader))
         {
             var token = authHeader.ToString().Replace("Bearer ", "");
-            var userId = await userService.GetUserIdAsync(token, context.HttpContext.RequestAborted);
+            var userId = await handler.HandleAsync(new GetUserIdRequest(token), context.HttpContext.RequestAborted);
 
             if (userId is not null)
             {
