@@ -19,7 +19,7 @@ internal sealed class UserInfoRepository : IUserInfoRepository
     public Task<IReadOnlyCollection<UserInfo>> GetAsync(CancellationToken cancellationToken)
     {
         var command = new CommandDefinition(
-            $@"select * from {nameof(UserInfo)}",
+            $"select * from {nameof(UserInfo)}",
             cancellationToken: cancellationToken);
 
         return _baseRepository.QueryAsync<UserInfo>(command);

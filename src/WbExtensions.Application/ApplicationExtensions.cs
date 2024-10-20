@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using WbExtensions.Application.Implementations.Alice;
-using WbExtensions.Application.Implementations.MqttHandlers;
-using WbExtensions.Application.Interfaces.Alice;
+using WbExtensions.Application.Handlers;
+using WbExtensions.Application.UseCases.ExecuteAliceCommands;
+using WbExtensions.Application.UseCases.GetDevicesForAlice;
+using WbExtensions.Application.UseCases.UpdateVirtualDeviceState;
 
 namespace WbExtensions.Application;
 
@@ -11,14 +12,13 @@ public static class ApplicationExtensions
     {
         services
             .AddSingleton<LogZigbee2MqttEventsHandler>()
-            .AddSingleton<MqttDevicesControlsMetricsHandler>()
             .AddSingleton<ParseZigbee2MqttEventsHandler>()
-            .AddSingleton<SaveTelemetryHandler>();
+            .AddSingleton<SubscribeDevicesToMqttHandler>();
 
         services
-            .AddSingleton<AliceDevicesManager>()
-            .AddSingleton(sp => new InitializationFacade(sp.GetService<AliceDevicesManager>()!))
-            .AddSingleton<IAliceDevicesManager>(sp => sp.GetService<InitializationFacade>()!);
+            .AddSingleton<GetDevicesForAliceHandler>()
+            .AddSingleton<ExecuteAliceCommandsHandler>()
+            .AddSingleton<UpdateVirtualDeviceStateHandler>();
 
         return services;
     }

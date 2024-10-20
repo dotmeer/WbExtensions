@@ -10,7 +10,7 @@ using WbExtensions.Application.Interfaces.Metrics;
 using WbExtensions.Application.Interfaces.Mqtt;
 using WbExtensions.Domain.Mqtt;
 
-namespace WbExtensions.Application.Implementations.MqttHandlers;
+namespace WbExtensions.Application.Handlers;
 
 public sealed class ParseZigbee2MqttEventsHandler : IMqttHandler
 {

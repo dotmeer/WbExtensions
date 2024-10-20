@@ -2,6 +2,7 @@
 using System;
 using Microsoft.Extensions.Configuration;
 using WbExtensions.Domain.Home;
+using WbExtensions.Application.Interfaces.Home;
 
 namespace WbExtensions.Infrastructure.Home;
 
@@ -14,7 +15,8 @@ internal static class InfrastructureHomeExtensions
                          .Get<DevicesSchema>()
                      ?? throw new ArgumentNullException(nameof(DevicesSchema));
         services
-            .AddSingleton(schema);
+            .AddSingleton(schema)
+            .AddSingleton<IVirtualDevicesRepository, VirtualDevicesRepository>();
 
         return services;
     }

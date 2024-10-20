@@ -5,7 +5,7 @@ using WbExtensions.Domain.Alice.Parameters;
 using WbExtensions.Domain.Home;
 using WbExtensions.Domain.Home.Enums;
 
-namespace WbExtensions.Application.Implementations.Alice.Converters;
+namespace WbExtensions.Application.Helpers.Alice.Converters;
 
 internal static class PropertiesConverter
 {
@@ -45,7 +45,7 @@ internal static class PropertiesConverter
             }
         }
     }
-    
+
     private static double ToFloat(this Control control)
     {
         return double.TryParse(control.Value, NumberFormatInfo.InvariantInfo, out var value)

@@ -4,7 +4,7 @@ using WbExtensions.Domain.Alice;
 using WbExtensions.Domain.Alice.Constants;
 using WbExtensions.Domain.Home;
 
-namespace WbExtensions.Application.Implementations.Alice.Converters;
+namespace WbExtensions.Application.Helpers.Alice.Converters;
 
 internal static class DeviceConverter
 {
@@ -21,11 +21,11 @@ internal static class DeviceConverter
                 Room = virtualDevice.Room,
                 Capabilities = virtualDevice.Controls.ToCapabilities().ToList(),
                 Properties = virtualDevice.Controls.ToProperties().ToList(),
-                CustomData = GetCustomData(virtualDevice)
+                CustomData = virtualDevice.GetCustomData()
             };
         }
     }
-    
+
     private static IDictionary<string, VirtualDeviceCustomData>? GetCustomData(this VirtualDevice virtualDevice)
     {
         switch (virtualDevice.Type)

@@ -54,7 +54,7 @@ on conflict ({nameof(Telemetry.Device)}, {nameof(Telemetry.Control)}) do update 
     public Task<IReadOnlyCollection<Telemetry>> GetAsync(CancellationToken cancellationToken)
     {
         var command = new CommandDefinition(
-            $@"select * from {nameof(Telemetry)}",
+            $"select * from {nameof(Telemetry)}",
             cancellationToken: cancellationToken);
 
         return _baseRepository.QueryAsync<Telemetry>(command);

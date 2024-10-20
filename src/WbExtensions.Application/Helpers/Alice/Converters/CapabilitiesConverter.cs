@@ -4,7 +4,7 @@ using WbExtensions.Domain.Alice.Constants;
 using WbExtensions.Domain.Home;
 using WbExtensions.Domain.Home.Enums;
 
-namespace WbExtensions.Application.Implementations.Alice.Converters;
+namespace WbExtensions.Application.Helpers.Alice.Converters;
 
 internal static class CapabilitiesConverter
 {
@@ -26,7 +26,7 @@ internal static class CapabilitiesConverter
             }
         }
     }
-    
+
     public static string? GetCapabilityType(this Control control)
     {
         return control.Type switch
