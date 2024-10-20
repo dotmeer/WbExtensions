@@ -54,7 +54,7 @@ public sealed class UpdateVirtualDeviceStateHandler
                 && request.Value is not null)
             {
                 // сохраняем в оперативной памяти
-                control.Value = request.Value!;
+                control.UpdateValue(request.Value!);
 
                 // сохраняем в БД
                 await SaveAsync(virtualDeviceName, virtualControlName, request.Value, cancellationToken);

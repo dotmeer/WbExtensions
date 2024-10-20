@@ -86,18 +86,19 @@ public sealed class ExecuteAliceCommandsHandler
                 {
                     case ControlType.Switch:
                         topic = $"/devices/{command.Device}/controls/{command.Control}/on";
-                        message = control.Value = (bool)command.Value ? "1" : "0";
+                        control.UpdateValue((bool)command.Value ? "1" : "0");
+                        message = control.Value;
                         break;
 
                     case ControlType.Position:
                         topic = $"zigbee2mqtt/{command.Device}/set";
-                        control.Value = command.Value.ToString()!;
+                        control.UpdateValue(command.Value.ToString()!);
                         message = $"{{\"position\": {control.Value}}}";
                         break;
 
                     case ControlType.CurtainState:
                         topic = $"zigbee2mqtt/{command.Device}/set";
-                        control.Value = (bool)command.Value ? "OPEN" : "CLOSE";
+                        control.UpdateValue((bool)command.Value ? "OPEN" : "CLOSE");
                         message = $"{{\"state\": \"{control.Value}\"}}";
                         break;
 

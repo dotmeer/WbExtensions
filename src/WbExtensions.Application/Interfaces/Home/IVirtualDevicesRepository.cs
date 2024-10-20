@@ -11,8 +11,5 @@ public interface IVirtualDevicesRepository
 
     bool TryGetControl(string virtualDeviceName, string virtualControlName, out VirtualDevice? virtualDevice, out Control? control);
 
-    bool SetDeviceControlValue(string virtualDeviceName, string virtualControlName, string? value);
-
-    // TODO: вынести в отдельный интерфейс и использовать для инициализации только его
     Task InitAsync(CancellationToken cancellationToken);
 }

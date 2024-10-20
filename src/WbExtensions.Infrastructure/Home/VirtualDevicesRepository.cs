@@ -54,27 +54,6 @@ internal sealed class VirtualDevicesRepository : IVirtualDevicesRepository
         return control is not null;
     }
 
-    // TODO: насколько это нужно?
-    public bool SetDeviceControlValue(string virtualDeviceName, string virtualControlName, string? value)
-    {
-        if (!_manualResetEvent.WaitOne(TimeSpan.FromMinutes(1)))
-        {
-            throw new SynchronizationLockException("Устройства все еще заблокированы");
-        }
-
-        if (TryGetControl(virtualDeviceName, virtualControlName, out var virtualDevice, out var control))
-        {
-            if (control!.Value != value
-                && value is not null)
-            {
-                control.Value = value!;
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public async Task InitAsync(CancellationToken cancellationToken)
     {
         if(!_inited)
@@ -91,7 +70,7 @@ internal sealed class VirtualDevicesRepository : IVirtualDevicesRepository
 
                     if (telemetry is not null)
                     {
-                        control.Value = telemetry.Value;
+                        control.UpdateValue(telemetry.Value);
                     }
                 }
             }

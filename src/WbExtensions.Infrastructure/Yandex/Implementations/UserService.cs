@@ -68,7 +68,6 @@ internal sealed class UserService : IUserService
         return userInfo.Id;
     }
 
-    // TODO: to UseCases
     public async Task RemoveAsync(string? token, CancellationToken cancellationToken)
     {
         if (!string.IsNullOrEmpty(token)

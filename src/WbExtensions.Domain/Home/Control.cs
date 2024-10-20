@@ -10,5 +10,10 @@ public sealed class Control
 
     public bool Reportable { get; init; } = true;
 
-    public string Value { get; set; } = default!;
+    public string Value { get; private set; } = default!;
+
+    public void UpdateValue(string value)
+    {
+        Value = value;
+    }
 }
