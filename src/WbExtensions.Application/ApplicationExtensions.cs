@@ -1,10 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using WbExtensions.Application.Handlers;
-using WbExtensions.Application.UseCases.ExecuteAliceCommands;
-using WbExtensions.Application.UseCases.GetDevicesForAlice;
-using WbExtensions.Application.UseCases.GetUserId;
-using WbExtensions.Application.UseCases.RemoveUser;
-using WbExtensions.Application.UseCases.UpdateVirtualDeviceState;
+using WbExtensions.Application.Handlers.Mqtt;
 
 namespace WbExtensions.Application;
 
@@ -18,11 +13,10 @@ public static class ApplicationExtensions
             .AddSingleton<SubscribeDevicesToMqttHandler>();
 
         services
-            .AddSingleton<GetDevicesForAliceHandler>()
-            .AddSingleton<ExecuteAliceCommandsHandler>()
-            .AddSingleton<UpdateVirtualDeviceStateHandler>()
-            .AddSingleton<RemoveUserHandler>()
-            .AddSingleton<GetUserIdHandler>();
+            .AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(ApplicationExtensions).Assembly);
+            });
 
         return services;
     }

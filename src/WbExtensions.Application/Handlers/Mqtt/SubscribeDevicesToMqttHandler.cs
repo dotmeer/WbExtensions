@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using WbExtensions.Application.Interfaces.Mqtt;
 using WbExtensions.Application.UseCases.UpdateVirtualDeviceState;
 using WbExtensions.Domain.Mqtt;
 
-namespace WbExtensions.Application.Handlers;
+namespace WbExtensions.Application.Handlers.Mqtt;
 
 public sealed class SubscribeDevicesToMqttHandler : IMqttHandler
 {
-    private readonly UpdateVirtualDeviceStateHandler _handler;
+    private readonly IMediator _mediator;
     private readonly ILogger<SubscribeDevicesToMqttHandler> _logger;
 
     public SubscribeDevicesToMqttHandler(
-        UpdateVirtualDeviceStateHandler handler,
+        IMediator mediator,
         ILogger<SubscribeDevicesToMqttHandler> logger)
     {
-        _handler = handler;
+        _mediator = mediator;
         _logger = logger;
     }
 
@@ -25,7 +26,7 @@ public sealed class SubscribeDevicesToMqttHandler : IMqttHandler
     {
         try
         {
-            await _handler.HandleAsync(
+            await _mediator.Send(
                 new UpdateVirtualDeviceStateRequest(message.Topic, message.Payload),
                 cancellationToken);
         }

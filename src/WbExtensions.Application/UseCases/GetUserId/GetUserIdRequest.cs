@@ -1,3 +1,5 @@
-﻿namespace WbExtensions.Application.UseCases.GetUserId;
+﻿using MediatR;
 
-public sealed record GetUserIdRequest(string? Token);
+namespace WbExtensions.Application.UseCases.GetUserId;
+
+public sealed record GetUserIdRequest(string? Token) : IRequest<string?>;

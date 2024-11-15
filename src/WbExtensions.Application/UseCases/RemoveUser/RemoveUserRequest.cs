@@ -1,3 +1,5 @@
-﻿namespace WbExtensions.Application.UseCases.RemoveUser;
+﻿using MediatR;
 
-public sealed record RemoveUserRequest(string? Token);
+namespace WbExtensions.Application.UseCases.RemoveUser;
+
+public sealed record RemoveUserRequest(string? Token) : IRequest;

@@ -2,7 +2,7 @@
 
 namespace WbExtensions.Application.Helpers;
 
-public static class TopicNameHelper
+internal static class TopicNameHelper
 {
     public static (string deviceName, string topicName) ParseDeviceControlTopic(string topic)
     {

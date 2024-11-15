@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using WbExtensions.Application.UseCases.RemoveUser;
 using WbExtensions.Domain.Alice.Responses;
@@ -11,16 +12,15 @@ namespace WbExtensions.Service.Controllers;
 [Route("aliceapi/v1.0")]
 [AllowExternalAccess(true)]
 [YandexAuthorization]
-public sealed class UsersController : ControllerBase
+public sealed class UsersController(IMediator mediator) : ControllerBase
 {
     [HttpPost("user/unlink")]
     public async Task<IActionResult> UnlinkUserAsync(
         [FromHeader(Name = "X-Request-Id")] string? requestId,
         [FromHeader(Name = AuthConstants.AuthHeaderName)] string? token,
-        CancellationToken cancellationToken,
-        [FromServices] RemoveUserHandler handler)
+        CancellationToken cancellationToken)
     {
-        await handler.HandleAsync(new RemoveUserRequest(token), cancellationToken);
+        await mediator.Send(new RemoveUserRequest(token), cancellationToken);
 
         return Ok(
             new AliceResponse

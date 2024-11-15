@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using WbExtensions.Application.Interfaces.Home;
 using WbExtensions.Application.Interfaces.Mqtt;
 using WbExtensions.Domain.Alice;
@@ -12,7 +13,7 @@ using WbExtensions.Domain.Mqtt;
 
 namespace WbExtensions.Application.UseCases.ExecuteAliceCommands;
 
-public sealed class ExecuteAliceCommandsHandler
+internal sealed class ExecuteAliceCommandsHandler : IRequestHandler<ExecuteAliceCommandsRequest, IList<Device>>
 {
     private string MqttClientName => nameof(ExecuteAliceCommandsHandler);
 
@@ -28,7 +29,7 @@ public sealed class ExecuteAliceCommandsHandler
         _mqttService = mqttService;
     }
 
-    public async Task<IList<Device>> HandleAsync(
+    public async Task<IList<Device>> Handle(
         ExecuteAliceCommandsRequest request,
         CancellationToken cancellationToken)
     {

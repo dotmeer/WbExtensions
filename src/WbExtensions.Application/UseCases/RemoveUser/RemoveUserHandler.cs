@@ -1,11 +1,12 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using WbExtensions.Application.Interfaces.Database;
 using WbExtensions.Application.Interfaces.Yandex;
 
 namespace WbExtensions.Application.UseCases.RemoveUser;
 
-public sealed class RemoveUserHandler
+internal sealed class RemoveUserHandler : IRequestHandler<RemoveUserRequest>
 {
     private readonly IUsersCache _usersCache;
     private readonly IUserInfoRepository _userInfoRepository;
@@ -18,7 +19,7 @@ public sealed class RemoveUserHandler
         _userInfoRepository = userInfoRepository;
     }
 
-    public async Task HandleAsync(RemoveUserRequest request, CancellationToken cancellationToken)
+    public async Task Handle(RemoveUserRequest request, CancellationToken cancellationToken)
     {
         if (!string.IsNullOrEmpty(request.Token)
             && _usersCache.TryRemove(request.Token.Replace("Bearer ", ""), out var userInfo))

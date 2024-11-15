@@ -2,13 +2,14 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using WbExtensions.Application.Helpers.Alice.Converters;
 using WbExtensions.Application.Interfaces.Home;
 using WbExtensions.Domain.Alice;
 
 namespace WbExtensions.Application.UseCases.GetDevicesForAlice;
 
-public sealed class GetDevicesForAliceHandler
+internal sealed class GetDevicesForAliceHandler : IRequestHandler<GetDevicesForAliceRequest, IList<Device>>
 {
     private readonly IVirtualDevicesRepository _virtualDevicesRepository;
 
@@ -17,7 +18,7 @@ public sealed class GetDevicesForAliceHandler
         _virtualDevicesRepository = virtualDevicesRepository;
     }
 
-    public Task<IList<Device>> HandleAsync(
+    public Task<IList<Device>> Handle(
         GetDevicesForAliceRequest request,
         CancellationToken cancellationToken)
     {

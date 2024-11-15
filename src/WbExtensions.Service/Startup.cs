@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using WbExtensions.Application;
-using WbExtensions.Application.Handlers;
+using WbExtensions.Application.Handlers.Mqtt;
 using WbExtensions.Domain.Mqtt;
 using WbExtensions.Infrastructure;
 using WbExtensions.Infrastructure.Json;

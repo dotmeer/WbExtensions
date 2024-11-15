@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using WbExtensions.Application.Interfaces.Database;
 using WbExtensions.Application.Interfaces.Yandex;
 using WbExtensions.Application.Models.Yandex;
@@ -8,7 +9,7 @@ using WbExtensions.Domain;
 
 namespace WbExtensions.Application.UseCases.GetUserId;
 
-public sealed class GetUserIdHandler
+internal sealed class GetUserIdHandler : IRequestHandler<GetUserIdRequest, string?>
 {
     private readonly IUserInfoRepository _userInfoRepository;
     private readonly IUsersCache _usersCache;
@@ -27,7 +28,7 @@ public sealed class GetUserIdHandler
         _yandexUserInfoClient = yandexUserInfoClient;
     }
 
-    public async Task<string?> HandleAsync(GetUserIdRequest request, CancellationToken cancellationToken)
+    public async Task<string?> Handle(GetUserIdRequest request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(request.Token))
         {

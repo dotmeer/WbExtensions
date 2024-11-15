@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using WbExtensions.Application.Interfaces.Mqtt;
 using WbExtensions.Domain.Mqtt;
 
-namespace WbExtensions.Application.Handlers;
+namespace WbExtensions.Application.Handlers.Mqtt;
 
 public sealed class LogZigbee2MqttEventsHandler : IMqttHandler
 {

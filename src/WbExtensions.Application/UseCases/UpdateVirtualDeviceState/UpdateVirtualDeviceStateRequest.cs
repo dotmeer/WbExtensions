@@ -1,5 +1,8 @@
-﻿namespace WbExtensions.Application.UseCases.UpdateVirtualDeviceState;
+﻿using MediatR;
+
+namespace WbExtensions.Application.UseCases.UpdateVirtualDeviceState;
 
 public sealed record UpdateVirtualDeviceStateRequest(
     string Topic,
-    string? Value);
+    string? Value)
+    : IRequest;

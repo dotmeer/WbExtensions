@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using MediatR;
+using WbExtensions.Domain.Alice;
 using WbExtensions.Domain.Alice.Requests;
-using WbExtensions.Domain.Home;
 
 namespace WbExtensions.Application.UseCases.ExecuteAliceCommands;
 
 public sealed record ExecuteAliceCommandsRequest(
-    IReadOnlyCollection<SetUSerDevicesStateRequestItem> Actions);
+    IReadOnlyCollection<SetUSerDevicesStateRequestItem> Actions)
+    : IRequest<IList<Device>>;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,12 +14,12 @@ internal sealed class YandexAuthorizationAttribute : Attribute, IAsyncAuthorizat
 {
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
-        var handler = context.HttpContext.RequestServices.GetService<GetUserIdHandler>()!;
+        var mediator = context.HttpContext.RequestServices.GetService<IMediator>()!;
 
         if (context.HttpContext.Request.Headers.TryGetValue(AuthConstants.AuthHeaderName, out var authHeader))
         {
             var token = authHeader.ToString().Replace("Bearer ", "");
-            var userId = await handler.HandleAsync(new GetUserIdRequest(token), context.HttpContext.RequestAborted);
+            var userId = await mediator.Send(new GetUserIdRequest(token), context.HttpContext.RequestAborted);
 
             if (userId is not null)
             {
