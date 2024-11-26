@@ -103,6 +103,12 @@ internal sealed class ExecuteAliceCommandsHandler : IRequestHandler<ExecuteAlice
                         message = $"{{\"state\": \"{control.Value}\"}}";
                         break;
 
+                    case ControlType.Thermostat:
+                        topic = $"/devices/{command.Device}/controls/{command.Control}/on";
+                        control.UpdateValue(command.Value.ToString()!);
+                        message = control.Value;
+                        break;
+
                     default:
                         topic = null;
                         message = null;

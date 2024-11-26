@@ -31,6 +31,7 @@ internal static class DeviceConverter
         switch (virtualDevice.Type)
         {
             case DeviceTypes.Light:
+            case DeviceTypes.Thermostat:
             case DeviceTypes.ThermostatAc:
             case DeviceTypes.OpenableCurtain:
                 var result = new Dictionary<string, VirtualDeviceCustomData>(virtualDevice.Controls.Count);

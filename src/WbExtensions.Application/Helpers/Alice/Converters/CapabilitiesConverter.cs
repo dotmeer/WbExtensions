@@ -20,8 +20,12 @@ internal static class CapabilitiesConverter
                     break;
 
                 case ControlType.Position:
-                    yield return Capability.CreateRangeCapability(control.ToDouble(), control.Reportable);
+                    yield return Capability.CreateOpenRangeCapability(control.ToDouble(), control.Reportable);
                     yield return Capability.CreateOnOffCapability(control.IsOpen(), control.Reportable, true);
+                    break;
+
+                case ControlType.Thermostat:
+                    yield return Capability.CreateTemperatureRangeCapability(control.ToDouble(), true);
                     break;
             }
         }
@@ -34,6 +38,7 @@ internal static class CapabilitiesConverter
             ControlType.Switch => CapabilityTypes.OnOff,
             ControlType.Position => CapabilityTypes.Range,
             ControlType.CurtainState => CapabilityTypes.OnOff,
+            ControlType.Thermostat => CapabilityTypes.Range,
             _ => null
         };
     }

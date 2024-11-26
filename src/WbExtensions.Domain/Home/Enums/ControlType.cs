@@ -24,5 +24,7 @@ public enum ControlType
 
     Position,
 
-    CurtainState
+    CurtainState,
+
+    Thermostat
 }

@@ -56,6 +56,7 @@ internal static class PropertiesConverter
     private static string ToMotion(this Control control)
     {
         return string.Equals(control.Value, "true", StringComparison.OrdinalIgnoreCase)
+               || string.Equals(control.Value, "1", StringComparison.OrdinalIgnoreCase)
             ? "detected"
             : "not_detected";
     }
@@ -63,6 +64,7 @@ internal static class PropertiesConverter
     private static string ToOpen(this Control control)
     {
         return string.Equals(control.Value, "true", StringComparison.OrdinalIgnoreCase)
+               || string.Equals(control.Value, "1", StringComparison.OrdinalIgnoreCase)
             ? "closed"
             : "opened";
     }

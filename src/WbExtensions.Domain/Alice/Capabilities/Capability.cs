@@ -65,18 +65,35 @@ public sealed class Capability
             });
     }
 
-    public static Capability CreateRangeCapability(double value, bool reportable, double precision = 10)
+    public static Capability CreateOpenRangeCapability(double value, bool reportable, double precision = 10)
     {
         return new Capability(
             CapabilityTypes.Range,
             true,
             reportable,
             new RangeCapabilityParameter(
-                "open",
-                "unit.percent",
+                CapabilityStateInstances.Open,
+                FloatPropertyUnits.Percent,
                 true,
                 new RangeCapabilityParameterRange(0, 100, precision)),
-            new RangeCapabilityState("open")
+            new RangeCapabilityState(CapabilityStateInstances.Open)
+            {
+                Value = value
+            });
+    }
+
+    public static Capability CreateTemperatureRangeCapability(double value, bool reportable, double precision = 1)
+    {
+        return new Capability(
+            CapabilityTypes.Range,
+            true,
+            reportable,
+            new RangeCapabilityParameter(
+                CapabilityStateInstances.Temperature,
+                FloatPropertyUnits.TemperatureCelsius,
+                true,
+                new RangeCapabilityParameterRange(4, 35, precision)),
+            new RangeCapabilityState(CapabilityStateInstances.Temperature)
             {
                 Value = value
             });
