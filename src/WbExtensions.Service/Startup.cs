@@ -99,6 +99,8 @@ internal sealed class Startup
             .UseMiddleware<ExceptionsMiddleware>();
 
         app.UseRouting();
+        
+        app.UseOpenTelemetryPrometheusScrapingEndpoint("/metrics-ot");
 
         app.UseEndpoints(endpoints =>
         {

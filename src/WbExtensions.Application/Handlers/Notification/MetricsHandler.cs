@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -26,7 +27,7 @@ internal sealed class MetricsHandler : INotificationHandler<ValueNotification>
     {
         try
         {
-            if (double.TryParse(notification.Value, out var doubleValue))
+            if (double.TryParse(notification.Value, NumberFormatInfo.InvariantInfo, out var doubleValue))
             {
                 _metricsService.SetGauge(
                     "mqtt_topic_values",
