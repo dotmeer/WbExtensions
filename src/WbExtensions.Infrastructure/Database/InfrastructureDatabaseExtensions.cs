@@ -32,7 +32,8 @@ internal static class InfrastructureDatabaseExtensions
             .AddSingleton<IDatabaseMigrator, DatabaseMigrator>()
             .AddSingleton<BaseRepository>()
             .AddSingleton<ITelemetryRepository, TelemetryRepository>()
-            .AddSingleton<IUserInfoRepository, UserInfoRepository>();
+            .AddSingleton<IUserInfoRepository, UserInfoRepository>()
+            .AddSingleton<ITelegramUserRepository, TelegramUserRepository>();
 
         return services;
     }
@@ -56,5 +57,7 @@ internal static class InfrastructureDatabaseExtensions
     {
         SqlMapper.RemoveTypeMap(typeof(DateTime));
         SqlMapper.AddTypeHandler(new DateTimeHandler());
+        SqlMapper.RemoveTypeMap(typeof(bool));
+        SqlMapper.AddTypeHandler(new BoolHandler());
     }
 }

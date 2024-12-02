@@ -13,26 +13,27 @@ namespace WbExtensions.Service.Controllers;
 [AllowExternalAccess(false)]
 public sealed class StorageController : ControllerBase
 {
-    private readonly ITelemetryRepository _telemetryRepository;
-    private readonly IUserInfoRepository _userInfoRepository;
-
-    public StorageController(
-        ITelemetryRepository telemetryRepository,
-        IUserInfoRepository userInfoRepository)
-    {
-        _telemetryRepository = telemetryRepository;
-        _userInfoRepository = userInfoRepository;
-    }
-
     [HttpGet(nameof(Telemetry))]
-    public Task<IReadOnlyCollection<Telemetry>> GetTelemetryAsync(CancellationToken cancellationToken)
+    public Task<IReadOnlyCollection<Telemetry>> GetTelemetryAsync(
+        CancellationToken cancellationToken,
+        [FromServices] ITelemetryRepository telemetryRepository)
     {
-        return _telemetryRepository.GetAsync(cancellationToken);
+        return telemetryRepository.GetAsync(cancellationToken);
     }
 
     [HttpGet(nameof(UserInfo))]
-    public Task<IReadOnlyCollection<UserInfo>> GetUserInfoAsync(CancellationToken cancellationToken)
+    public Task<IReadOnlyCollection<UserInfo>> GetUserInfoAsync(
+        CancellationToken cancellationToken,
+        [FromServices] IUserInfoRepository userInfoRepository)
     {
-        return _userInfoRepository.GetAsync(cancellationToken);
+        return userInfoRepository.GetAsync(cancellationToken);
+    }
+
+    [HttpGet(nameof(TelegramUser))]
+    public Task<IReadOnlyCollection<TelegramUser>> GetTelegramUserAsync(
+        CancellationToken cancellationToken,
+        [FromServices] ITelegramUserRepository telegramUserRepository)
+    {
+        return telegramUserRepository.GetAsync(cancellationToken);
     }
 }

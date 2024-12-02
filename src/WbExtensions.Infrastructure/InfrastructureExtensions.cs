@@ -4,6 +4,7 @@ using WbExtensions.Infrastructure.Database;
 using WbExtensions.Infrastructure.Home;
 using WbExtensions.Infrastructure.Metrics;
 using WbExtensions.Infrastructure.Mqtt;
+using WbExtensions.Infrastructure.Telegram;
 using WbExtensions.Infrastructure.Yandex;
 
 namespace WbExtensions.Infrastructure;
@@ -19,7 +20,8 @@ public static class InfrastructureExtensions
             .SetupMetrics()
             .SetupMqtt(configuration)
             .SetupYandex(configuration)
-            .SetupHome(configuration);
+            .SetupHome(configuration)
+            .SetupTelegram(configuration);
 
         return services;
     }
