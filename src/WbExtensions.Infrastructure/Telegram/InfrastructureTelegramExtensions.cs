@@ -16,7 +16,9 @@ internal static class InfrastructureTelegramExtensions
 
         services
             .AddSingleton(telegramBotSettings)
-            .AddSingleton<ITelegramService, TelegramService>();
+            .AddSingleton<TelegramService>()
+            .AddSingleton<ITelegramService>(sp => sp.GetRequiredService<TelegramService>())
+            .AddSingleton<IInitializer>(sp => sp.GetRequiredService<TelegramService>());
 
         return services;
     }

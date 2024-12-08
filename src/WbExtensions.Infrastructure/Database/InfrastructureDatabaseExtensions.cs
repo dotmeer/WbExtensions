@@ -6,6 +6,7 @@ using Dapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WbExtensions.Application.Interfaces.Database;
+using WbExtensions.Infrastructure.Database.Migrations;
 using WbExtensions.Infrastructure.Database.Repositories;
 using WbExtensions.Infrastructure.Database.Settings;
 using WbExtensions.Infrastructure.Database.TypeHandlers;
@@ -31,7 +32,8 @@ internal static class InfrastructureDatabaseExtensions
             .AddSingleton<BaseRepository>()
             .AddSingleton<ITelemetryRepository, TelemetryRepository>()
             .AddSingleton<IUserInfoRepository, UserInfoRepository>()
-            .AddSingleton<ITelegramUserRepository, TelegramUserRepository>();
+            .AddSingleton<ITelegramUserRepository, TelegramUserRepository>()
+            .AddSingleton<IInitializer, DatabaseMigrator>();
 
         return services;
     }

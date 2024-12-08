@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Reflection;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WbExtensions.Infrastructure.Database;
 using WbExtensions.Infrastructure.Home;
@@ -24,12 +22,6 @@ public static class InfrastructureExtensions
             .SetupYandex(configuration)
             .SetupHome(configuration)
             .SetupTelegram(configuration);
-
-        foreach (var type in Assembly.GetExecutingAssembly().GetTypes()
-                     .Where(t => t.IsAssignableTo(typeof(IInitializer)) && t.IsClass))
-        {
-            services.AddSingleton(typeof(IInitializer), type);
-        }
 
         return services;
     }
