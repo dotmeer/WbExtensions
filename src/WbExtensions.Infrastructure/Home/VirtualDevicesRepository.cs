@@ -13,7 +13,7 @@ using WbExtensions.Infrastructure.Json;
 
 namespace WbExtensions.Infrastructure.Home;
 
-internal sealed class VirtualDevicesRepository : IVirtualDevicesRepository
+internal sealed class VirtualDevicesRepository : IVirtualDevicesRepository, IInitializer
 {
     private readonly ITelemetryRepository _telemetryRepository;
 
@@ -55,6 +55,10 @@ internal sealed class VirtualDevicesRepository : IVirtualDevicesRepository
 
         return control is not null;
     }
+
+    public string Name => "Virtual devices";
+
+    public int Order => 10;
 
     public async Task InitAsync(CancellationToken cancellationToken)
     {

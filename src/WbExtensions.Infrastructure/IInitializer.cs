@@ -1,9 +1,13 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace WbExtensions.Application.Interfaces.Database;
+namespace WbExtensions.Infrastructure;
 
-public interface IDatabaseMigrator
+public interface IInitializer
 {
+    string Name { get; }
+
+    int Order { get; }
+
     Task InitAsync(CancellationToken cancellationToken);
 }

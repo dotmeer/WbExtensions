@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -17,13 +16,13 @@ using WbExtensions.Infrastructure.Telegram.Settings;
 
 namespace WbExtensions.Infrastructure.Telegram.Implementations;
 
-internal sealed class TelegramService : ITelegramService
+internal sealed class TelegramService : ITelegramService, IInitializer
 {
     private readonly TelegramBotSettings _settings;
     private readonly ILogger<TelegramService> _logger;
     private readonly ITelegramUserRepository _repository;
 
-    private TelegramBotClient _botClient;
+    private TelegramBotClient _botClient = default!;
     private bool _inited = false;
     private ConcurrentBag<TelegramUser> _telegramUsers = [];
 
@@ -49,6 +48,10 @@ internal sealed class TelegramService : ITelegramService
                 cancellationToken: cancellationToken);
         }
     }
+
+    public string Name => "Telegram client";
+
+    public int Order => 100;
 
     public async Task InitAsync(CancellationToken cancellationToken)
     {
