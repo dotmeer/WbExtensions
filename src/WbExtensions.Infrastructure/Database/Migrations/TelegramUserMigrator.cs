@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
-using WbExtensions.Domain;
+using WbExtensions.Domain.Telegram;
 
 namespace WbExtensions.Infrastructure.Database.Migrations;
 
@@ -14,8 +14,7 @@ internal sealed class TelegramUserMigrator : IMigration
 create table if not exists {nameof(TelegramUser)} (
     {nameof(TelegramUser.UserId)} integer not null,
     {nameof(TelegramUser.UserName)} text null,
-    {nameof(TelegramUser.IsAllowed)} integer not null,
-    {nameof(TelegramUser.IsAdmin)} integer not null,
+    {nameof(TelegramUser.Role)} integer not null,
     primary key ({nameof(TelegramUser.UserId)})
 );
 ",

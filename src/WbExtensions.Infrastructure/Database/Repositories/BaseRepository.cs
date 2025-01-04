@@ -41,10 +41,24 @@ internal sealed class BaseRepository : IDisposable
         try
         {
             using var connection = _dbConnectionFactory.Create();
-
             var result = await connection.QueryAsync<T>(command);
 
             return result.ToList();
+        }
+        finally
+        {
+            _semaphore.Release();
+        }
+    }
+    
+    public async Task<T?> FindAsync<T>(CommandDefinition command)
+    {
+        await _semaphore.WaitAsync(command.CancellationToken);
+
+        try
+        {
+            using var connection = _dbConnectionFactory.Create();
+            return await connection.QuerySingleOrDefaultAsync<T>(command);
         }
         finally
         {

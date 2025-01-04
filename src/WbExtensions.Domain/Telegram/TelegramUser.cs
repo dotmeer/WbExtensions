@@ -1,4 +1,4 @@
-﻿namespace WbExtensions.Domain;
+﻿namespace WbExtensions.Domain.Telegram;
 
 public sealed class TelegramUser
 {
@@ -6,7 +6,5 @@ public sealed class TelegramUser
 
     public string? UserName { get; init; }
 
-    public bool IsAllowed { get; set; }
-
-    public bool IsAdmin { get; set; }
+    public Role Role { get; init; }
 }

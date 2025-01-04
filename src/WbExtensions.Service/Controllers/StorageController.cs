@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WbExtensions.Application.Interfaces.Database;
 using WbExtensions.Domain;
+using WbExtensions.Domain.Telegram;
 using WbExtensions.Service.Authorization;
 
 namespace WbExtensions.Service.Controllers;

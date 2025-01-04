@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
 using WbExtensions.Application.Interfaces.Database;
-using WbExtensions.Domain;
+using WbExtensions.Domain.Telegram;
 
 namespace WbExtensions.Infrastructure.Database.Repositories;
 
@@ -25,17 +25,31 @@ internal sealed class TelegramUserRepository : ITelegramUserRepository
         return _baseRepository.QueryAsync<TelegramUser>(command);
     }
 
+    public Task<TelegramUser?> FindAsync(long userId, CancellationToken cancellationToken)
+    {
+        var command = new CommandDefinition(@$"
+select *
+from {nameof(TelegramUser)}
+where {nameof(TelegramUser.UserId)} = @{nameof(userId)}",
+            new
+            {
+                userId
+            },
+            cancellationToken: cancellationToken);
+
+        return _baseRepository.FindAsync<TelegramUser>(command);
+    }
+
     public Task AddAsync(TelegramUser telegramUser, CancellationToken cancellationToken)
     {
         var command = new CommandDefinition(@$"
-insert into {nameof(TelegramUser)} ({nameof(TelegramUser.UserId)}, {nameof(TelegramUser.UserName)}, {nameof(TelegramUser.IsAllowed)}, {nameof(TelegramUser.IsAdmin)})
-values(@{nameof(TelegramUser.UserId)}, @{nameof(TelegramUser.UserName)}, @{nameof(TelegramUser.IsAllowed)}, @{nameof(TelegramUser.IsAdmin)})",
+insert into {nameof(TelegramUser)} ({nameof(TelegramUser.UserId)}, {nameof(TelegramUser.UserName)}, {nameof(TelegramUser.Role)})
+values(@{nameof(TelegramUser.UserId)}, @{nameof(TelegramUser.UserName)}, @{nameof(TelegramUser.Role)})",
             new
             {
                 telegramUser.UserId,
                 telegramUser.UserName,
-                telegramUser.IsAllowed,
-                telegramUser.IsAdmin
+                telegramUser.Role
             },
             cancellationToken: cancellationToken);
 
@@ -46,10 +60,11 @@ values(@{nameof(TelegramUser.UserId)}, @{nameof(TelegramUser.UserName)}, @{nameo
     {
         var command = new CommandDefinition(@$"
 update {nameof(TelegramUser)}
-set {nameof(TelegramUser.IsAllowed)} = 1
+set {nameof(TelegramUser.Role)} = @role
 where {nameof(TelegramUser.UserId)} = @{nameof(userId)}",
             new
             {
+                role = Role.Keeper,
                 userId
             },
             cancellationToken: cancellationToken);
@@ -57,11 +72,10 @@ where {nameof(TelegramUser.UserId)} = @{nameof(userId)}",
         return _baseRepository.ExecuteAsync(command);
     }
 
-    public Task DisallowUserAsync(long userId, CancellationToken cancellationToken)
+    public Task DeleteAsync(long userId, CancellationToken cancellationToken)
     {
         var command = new CommandDefinition(@$"
-update {nameof(TelegramUser)}
-set {nameof(TelegramUser.IsAllowed)} = 0
+delete from {nameof(TelegramUser)}
 where {nameof(TelegramUser.UserId)} = @{nameof(userId)}",
             new
             {
