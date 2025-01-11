@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -39,7 +40,7 @@ internal sealed class TelegramService : ITelegramService, IInitializer
     public async Task SendMessageAsync(string message, CancellationToken cancellationToken)
     {
         var telegramUsers = await _repository.GetAsync(cancellationToken);
-        foreach (var user in telegramUsers.Where(u => u.Role > Role.Unknown))
+        foreach (var user in telegramUsers.Where(u => u.IsKnown))
         {
             await _botClient.SendMessage(
                 new ChatId(user.UserId),
@@ -94,77 +95,72 @@ internal sealed class TelegramService : ITelegramService, IInitializer
         var user = await GetUserAsync(message.Chat, cancellationToken);
         var telegramUsers = await _repository.GetAsync(cancellationToken);
 
-        switch (user.Role)
+        switch (message.Text)
         {
-            case Role.Admin:
-                switch (message.Text)
-                {
-                    case "Список пользователей":
-                        var text = new StringBuilder()
-                            .Append("Список пользователей:")
-                            .AppendLine();
-                        foreach (var telegramUser in telegramUsers.OrderByDescending(u => u.Role).ThenBy(u => u.UserName))
-                        {
-                            text.AppendLine($"{telegramUser.UserName} ({telegramUser.Role})");
-                        }
-
-                        await _botClient.SendMessage(
-                            message.Chat,
-                            text.ToString(),
-                            cancellationToken: cancellationToken);
-                        break;
-
-                    case "Запросы на доступ":
-                        var notAllowedUsersMarkup = new InlineKeyboardMarkup();
-                        foreach (var notAllowedUser in telegramUsers.Where(u => u.Role == Role.Unknown))
-                        {
-                            notAllowedUsersMarkup.AddButton(notAllowedUser.UserName!, notAllowedUser.UserId.ToString());
-                        }
-
-                        await _botClient.SendMessage(
-                            message.Chat,
-                            notAllowedUsersMarkup.InlineKeyboard.Any()
-                                ? "Список пользователей, ожидающих доступ"
-                                : "Нет пользователей, ожидающих доступ",
-                            replyMarkup: notAllowedUsersMarkup,
-                            cancellationToken: cancellationToken);
-                        break;
-
-                    case "Активные пользователи":
-                        var allowedUsersMarkup = new InlineKeyboardMarkup();
-                        foreach (var allowedUser in telegramUsers.Where(u => u.Role == Role.Keeper))
-                        {
-                            allowedUsersMarkup.AddButton(allowedUser.UserName!, allowedUser.UserId.ToString());
-                        }
-
-                        await _botClient.SendMessage(
-                            message.Chat,
-                            allowedUsersMarkup.InlineKeyboard.Any()
-                                ? "Список пользователей, имеющих доступ"
-                                : "Нет пользователей с доступом",
-                            replyMarkup: allowedUsersMarkup,
-                            cancellationToken: cancellationToken);
-                        break;
-
-                    default:
-                        await _botClient.SendMessage(
-                            message.Chat,
-                            "Неизвестная команда",
-                            replyMarkup: new ReplyKeyboardMarkup(true)
-                                .AddButton("Список пользователей")
-                                .AddButton("Запросы на доступ")
-                                .AddButton("Активные пользователи"),
-                            cancellationToken: cancellationToken);
-                        break;
-                }
-                break;
-
-            case Role.Unknown:
+            case Constants.Start:
                 await _botClient.SendMessage(
                     message.Chat,
-                    "Доступ запрещен",
-                    replyMarkup: new InlineKeyboardMarkup()
-                        .AddButton("Запросить доступ у администратора", user.UserId.ToString()), 
+                    "Добро пожаловать!",
+                    replyMarkup: GetDefaultMarkup(user),
+                    cancellationToken: cancellationToken);
+                break;
+
+            case Constants.GetUserList when user.IsAdmin:
+                var text = new StringBuilder()
+                    .Append("Список пользователей:")
+                    .AppendLine();
+                foreach (var telegramUser in telegramUsers.OrderByDescending(u => u.Role).ThenBy(u => u.UserName))
+                {
+                    text.AppendLine($"{telegramUser.UserName} ({telegramUser.Role})");
+                }
+
+                await _botClient.SendMessage(
+                    message.Chat,
+                    text.ToString(),
+                    cancellationToken: cancellationToken);
+                break;
+
+            case Constants.GetAccessRequests when user.IsAdmin:
+                var notAllowedUsersMarkup = new InlineKeyboardMarkup();
+                foreach (var notAllowedUser in telegramUsers.Where(u => u.IsUnknown))
+                {
+                    notAllowedUsersMarkup.AddButton(notAllowedUser.UserName!, notAllowedUser.UserId.ToString());
+                }
+
+                await _botClient.SendMessage(
+                    message.Chat,
+                    notAllowedUsersMarkup.InlineKeyboard.Any()
+                        ? Constants.WaitingAccessUserList
+                        : "Нет пользователей, ожидающих доступ",
+                    replyMarkup: notAllowedUsersMarkup,
+                    cancellationToken: cancellationToken);
+                break;
+
+            case Constants.GetAllowedUserList when user.IsAdmin:
+                var allowedUsersMarkup = new InlineKeyboardMarkup();
+                foreach (var allowedUser in telegramUsers.Where(u => u.IsKeeper))
+                {
+                    allowedUsersMarkup.AddButton(allowedUser.UserName!, allowedUser.UserId.ToString());
+                }
+
+                await _botClient.SendMessage(
+                    message.Chat,
+                    allowedUsersMarkup.InlineKeyboard.Any()
+                        ? Constants.AllowedUserList
+                        : "Нет пользователей с доступом",
+                    replyMarkup: allowedUsersMarkup,
+                    cancellationToken: cancellationToken);
+                break;
+
+            default:
+                await _botClient.SendMessage(
+                    message.Chat,
+                    user.Role switch
+                    {
+                        Role.Unknown => Constants.AccessDenied,
+                        _ => Constants.UnknownCommand
+                    },
+                    replyMarkup: GetDefaultMarkup(user),
                     cancellationToken: cancellationToken);
                 break;
         }
@@ -174,77 +170,70 @@ internal sealed class TelegramService : ITelegramService, IInitializer
     {
         var user = await GetUserAsync(callbackQuery.Message!.Chat, cancellationToken);
 
-        switch (user.Role)
+        await _botClient.DeleteMessage(
+            callbackQuery.Message!.Chat,
+            callbackQuery.Message!.MessageId,
+            cancellationToken);
+
+        switch (callbackQuery.Message!.Text)
         {
-            case Role.Admin:
-                switch (callbackQuery.Message!.Text)
-                {
-                    case "Список пользователей, ожидающих доступ":
-                    case "Пользователь запрашивает доступ":
-                        var toAllowUserId = long.Parse(callbackQuery.Data!);
-                        var allowedUser = await _repository.FindAsync(toAllowUserId, cancellationToken);
-                        await _repository.AllowUserAsync(toAllowUserId, cancellationToken);
+            case Constants.WaitingAccessUserList when user.IsAdmin:
+            case Constants.UserAccessRequest when user.IsAdmin:
+                var toAllowUserId = long.Parse(callbackQuery.Data!);
+                var allowedUser = await _repository.FindAsync(toAllowUserId, cancellationToken);
+                await _repository.AllowUserAsync(toAllowUserId, cancellationToken);
 
-                        await _botClient.DeleteMessage(
-                            callbackQuery.Message!.Chat,
-                            callbackQuery.Message!.MessageId,
-                            cancellationToken);
+                await _botClient.SendMessage(
+                    callbackQuery.Message!.Chat,
+                    $"Пользователю {allowedUser?.UserName} добавлен доступ.",
+                    cancellationToken: cancellationToken);
 
-                        await _botClient.SendMessage(
-                            callbackQuery.Message!.Chat,
-                            $"Пользователю {allowedUser?.UserName} добавлен доступ.",
-                            cancellationToken: cancellationToken);
-
-                        await _botClient.SendMessage(
-                            new ChatId(toAllowUserId),
-                            "Доступ получен",
-                            cancellationToken: cancellationToken);
-                        break;
-
-                    case "Список пользователей, имеющих доступ":
-                        var toDisallowUserId = long.Parse(callbackQuery.Data!);
-                        var disallowedUser = await _repository.FindAsync(toDisallowUserId, cancellationToken);
-                        await _repository.DeleteAsync(toDisallowUserId, cancellationToken);
-
-                        await _botClient.DeleteMessage(
-                            callbackQuery.Message!.Chat,
-                            callbackQuery.Message!.MessageId,
-                            cancellationToken);
-
-                        await _botClient.SendMessage(
-                            callbackQuery.Message!.Chat,
-                            $"Доступ для пользователя {disallowedUser?.UserName} удален.",
-                            cancellationToken: cancellationToken);
-                        break;
-                }
+                await _botClient.SendMessage(
+                    new ChatId(toAllowUserId),
+                    "Доступ получен",
+                    cancellationToken: cancellationToken);
                 break;
 
-            case Role.Unknown:
-                switch (callbackQuery.Message!.Text)
+            case Constants.AllowedUserList when user.IsAdmin:
+                var toDisallowUserId = long.Parse(callbackQuery.Data!);
+                var disallowedUser = await _repository.FindAsync(toDisallowUserId, cancellationToken);
+                await _repository.DeleteAsync(toDisallowUserId, cancellationToken);
+
+                await _botClient.SendMessage(
+                    callbackQuery.Message!.Chat,
+                    $"Доступ для пользователя {disallowedUser?.UserName} удален.",
+                    cancellationToken: cancellationToken);
+                break;
+
+            case Constants.AccessDenied when user.IsUnknown:
+            case Constants.AccessRequest when user.IsUnknown:
+                var users = await _repository.GetAsync(cancellationToken);
+                var askingUser = users.First(u => u.UserId == long.Parse(callbackQuery.Data!));
+
+                foreach (var admin in users.Where(u => u.IsAdmin))
                 {
-                    case "Доступ запрещен":
-                        var users = await _repository.GetAsync(cancellationToken);
-                        var askingUser = users.First(u => u.UserId == long.Parse(callbackQuery.Data!));
-                        
-                        await _botClient.DeleteMessage(
-                            callbackQuery.Message!.Chat,
-                            callbackQuery.Message!.MessageId,
-                            cancellationToken);
-
-                        foreach (var admin in users.Where(u => u.Role == Role.Admin))
-                        {
-                            await _botClient.SendMessage(
-                                new ChatId(admin.UserId),
-                                "Пользователь запрашивает доступ",
-                                replyMarkup: new InlineKeyboardMarkup()
-                                    .AddButton(
-                                        $"Выдать пользователю {askingUser.UserName} доступ",
-                                        askingUser.UserId.ToString()),
-                                cancellationToken: cancellationToken);
-                        }
-
-                        break;
+                    await _botClient.SendMessage(
+                        new ChatId(admin.UserId),
+                        Constants.UserAccessRequest,
+                        replyMarkup: new InlineKeyboardMarkup()
+                            .AddButton(
+                                $"Выдать пользователю {askingUser.UserName} доступ",
+                                askingUser.UserId.ToString()),
+                        cancellationToken: cancellationToken);
                 }
+
+                break;
+
+            default:
+                await _botClient.SendMessage(
+                    callbackQuery.Message!.Chat,
+                    user.Role switch
+                    {
+                        Role.Unknown => Constants.AccessDenied,
+                        _ => Constants.UnknownCommand
+                    },
+                    replyMarkup: GetDefaultMarkup(user),
+                    cancellationToken: cancellationToken);
                 break;
         }
     }
@@ -269,6 +258,16 @@ internal sealed class TelegramService : ITelegramService, IInitializer
 
         return telegramUser;
     }
-}
 
-// TODO: тексты в константы
+    private IReplyMarkup GetDefaultMarkup(TelegramUser user)
+        => user.Role switch
+        {
+            Role.Unknown => new InlineKeyboardMarkup()
+                .AddButton(Constants.AccessRequest, user.UserId.ToString()),
+            Role.Admin => new ReplyKeyboardMarkup(true)
+                .AddButton(Constants.GetUserList)
+                .AddButton(Constants.GetAccessRequests)
+                .AddButton(Constants.GetAllowedUserList),
+            _ => new ReplyKeyboardRemove()
+        };
+}
