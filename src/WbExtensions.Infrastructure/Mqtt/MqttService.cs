@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
-using MQTTnet.Client;
 using WbExtensions.Application.Interfaces.Mqtt;
 using WbExtensions.Domain.Mqtt;
 using WbExtensions.Infrastructure.Mqtt.Settings;
@@ -18,7 +17,7 @@ internal sealed class MqttService : IMqttService, IDisposable
 
     private readonly MqttSettings _mqttSettings;
 
-    private readonly MqttFactory _mqttFactory;
+    private readonly MqttClientFactory _mqttFactory;
 
     private readonly IDictionary<string, IMqttClient> _mqttClients;
 
@@ -28,7 +27,7 @@ internal sealed class MqttService : IMqttService, IDisposable
     {
         _logger = logger;
         _mqttSettings = mqttSettings;
-        _mqttFactory = new MqttFactory();
+        _mqttFactory = new MqttClientFactory();
         _mqttClients = new ConcurrentDictionary<string, IMqttClient>();
     }
 
