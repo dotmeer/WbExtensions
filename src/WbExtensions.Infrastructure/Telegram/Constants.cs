@@ -21,4 +21,8 @@ public static class Constants
     public const string AccessRequest = "Запросить доступ у администратора";
 
     public const string UnknownCommand = "Неизвестная команда";
+
+    public const string GetDevicesStates = "Состояние устройств";
+    
+    public const string Rooms = "Комнаты:";
 }

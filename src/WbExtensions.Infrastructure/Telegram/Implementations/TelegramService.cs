@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
@@ -12,6 +13,8 @@ using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using WbExtensions.Application.Interfaces.Database;
 using WbExtensions.Application.Interfaces.Telegram;
+using WbExtensions.Application.UseCases.GetRooms;
+using WbExtensions.Application.UseCases.GetStateInRoom;
 using WbExtensions.Domain.Telegram;
 using WbExtensions.Infrastructure.Telegram.Settings;
 
@@ -22,6 +25,7 @@ internal sealed class TelegramService : ITelegramService, IInitializer
     private readonly TelegramBotSettings _settings;
     private readonly ILogger<TelegramService> _logger;
     private readonly ITelegramUserRepository _repository;
+    private readonly IMediator _mediator;
 
     private TelegramBotClient _botClient = default!;
     private bool _inited = false;
@@ -29,12 +33,14 @@ internal sealed class TelegramService : ITelegramService, IInitializer
     public TelegramService(
         TelegramBotSettings settings,
         ILogger<TelegramService> logger,
-        ITelegramUserRepository repository)
+        ITelegramUserRepository repository,
+        IMediator mediator)
 
     {
         _settings = settings;
         _logger = logger;
         _repository = repository;
+        _mediator = mediator;
     }
 
     public async Task SendMessageAsync(string message, CancellationToken cancellationToken)
@@ -124,7 +130,7 @@ internal sealed class TelegramService : ITelegramService, IInitializer
                 var notAllowedUsersMarkup = new InlineKeyboardMarkup();
                 foreach (var notAllowedUser in telegramUsers.Where(u => u.IsUnknown))
                 {
-                    notAllowedUsersMarkup.AddButton(notAllowedUser.UserName!, notAllowedUser.UserId.ToString());
+                    notAllowedUsersMarkup.AddNewRow(InlineKeyboardButton.WithCallbackData(notAllowedUser.UserName!, notAllowedUser.UserId.ToString()));
                 }
 
                 await _botClient.SendMessage(
@@ -140,7 +146,7 @@ internal sealed class TelegramService : ITelegramService, IInitializer
                 var allowedUsersMarkup = new InlineKeyboardMarkup();
                 foreach (var allowedUser in telegramUsers.Where(u => u.IsKeeper))
                 {
-                    allowedUsersMarkup.AddButton(allowedUser.UserName!, allowedUser.UserId.ToString());
+                    allowedUsersMarkup.AddNewRow(InlineKeyboardButton.WithCallbackData(allowedUser.UserName!, allowedUser.UserId.ToString()));
                 }
 
                 await _botClient.SendMessage(
@@ -149,6 +155,20 @@ internal sealed class TelegramService : ITelegramService, IInitializer
                         ? Constants.AllowedUserList
                         : "Нет пользователей с доступом",
                     replyMarkup: allowedUsersMarkup,
+                    cancellationToken: cancellationToken);
+                break;
+
+            case Constants.GetDevicesStates when user.IsKnown:
+                var roomsMarkup = new InlineKeyboardMarkup();
+                foreach (var room in await _mediator.Send(new GetRoomsRequest(), cancellationToken))
+                {
+                    roomsMarkup.AddNewRow(InlineKeyboardButton.WithCallbackData(room));
+                }
+
+                await _botClient.SendMessage(
+                    message.Chat,
+                    Constants.Rooms,
+                    replyMarkup: roomsMarkup,
                     cancellationToken: cancellationToken);
                 break;
 
@@ -224,6 +244,13 @@ internal sealed class TelegramService : ITelegramService, IInitializer
 
                 break;
 
+            case Constants.Rooms when user.IsKnown:
+                await _botClient.SendMessage(
+                    callbackQuery.Message!.Chat,
+                    await _mediator.Send(new GetStateInRoomRequest(callbackQuery.Data!), cancellationToken),
+                    cancellationToken: cancellationToken);
+                break;
+
             default:
                 await _botClient.SendMessage(
                     callbackQuery.Message!.Chat,
@@ -264,8 +291,13 @@ internal sealed class TelegramService : ITelegramService, IInitializer
         {
             Role.Unknown => new InlineKeyboardMarkup()
                 .AddButton(Constants.AccessRequest, user.UserId.ToString()),
+            Role.Keeper => new ReplyKeyboardMarkup(true)
+                .AddButton(Constants.GetDevicesStates),
             Role.Admin => new ReplyKeyboardMarkup(true)
+                .AddNewRow()
+                .AddButton(Constants.GetDevicesStates)
                 .AddButton(Constants.GetUserList)
+                .AddNewRow()
                 .AddButton(Constants.GetAccessRequests)
                 .AddButton(Constants.GetAllowedUserList),
             _ => new ReplyKeyboardRemove()
