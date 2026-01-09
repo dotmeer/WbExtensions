@@ -1,7 +1,7 @@
-﻿using Dapper;
-using System.Data;
+﻿using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapper;
 using WbExtensions.Domain;
 
 namespace WbExtensions.Infrastructure.Database.Migrations;

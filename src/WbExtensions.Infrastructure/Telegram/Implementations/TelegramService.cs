@@ -286,7 +286,7 @@ internal sealed class TelegramService : ITelegramService, IInitializer
         return telegramUser;
     }
 
-    private IReplyMarkup GetDefaultMarkup(TelegramUser user)
+    private ReplyMarkup GetDefaultMarkup(TelegramUser user)
         => user.Role switch
         {
             Role.Unknown => new InlineKeyboardMarkup()

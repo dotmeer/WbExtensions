@@ -1,8 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using WbExtensions.Application.Interfaces.Home;
-using WbExtensions.Application.Helpers;
 using MediatR;
+using WbExtensions.Application.Helpers;
+using WbExtensions.Application.Interfaces.Home;
 using WbExtensions.Application.Models.Notification;
 
 namespace WbExtensions.Application.UseCases.UpdateVirtualDeviceState;

@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -16,25 +16,22 @@ public static class InfrastructureLoggingExtensions
 
         return builder;
     }
-    
-    public static IWebHostBuilder SetupLogging(
-        this IWebHostBuilder builder)
+
+    public static WebApplicationBuilder SetupLogging(
+        this WebApplicationBuilder builder)
     {
-        builder.ConfigureLogging(loggingBuilder =>
+        builder.Logging.ClearProviders();
+        builder.Logging.AddJsonConsole(_ =>
         {
-            loggingBuilder.ClearProviders();
-            loggingBuilder.AddJsonConsole(_ =>
+            _.TimestampFormat = "O";
+            _.UseUtcTimestamp = true;
+            _.IncludeScopes = true;
+            _.JsonWriterOptions = new JsonWriterOptions
             {
-                _.TimestampFormat = "O";
-                _.UseUtcTimestamp = true;
-                _.IncludeScopes = true;
-                _.JsonWriterOptions = new JsonWriterOptions
-                {
-                    Indented = false
-                };
-            });
-            loggingBuilder.AddMetricsLogger();
+                Indented = false
+            };
         });
+        builder.Logging.AddMetricsLogger();
 
         return builder;
     }

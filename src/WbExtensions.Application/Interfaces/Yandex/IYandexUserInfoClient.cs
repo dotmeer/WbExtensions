@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using System.Threading;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using WbExtensions.Application.Models.Yandex;
 
 namespace WbExtensions.Application.Interfaces.Yandex;

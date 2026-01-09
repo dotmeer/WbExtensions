@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,8 +9,8 @@ using WbExtensions.Application.Helpers.Alice.Converters;
 using WbExtensions.Application.Interfaces.Database;
 using WbExtensions.Application.Interfaces.Yandex;
 using WbExtensions.Application.Models.Notification;
-using WbExtensions.Domain.Alice.Push;
 using WbExtensions.Domain.Alice;
+using WbExtensions.Domain.Alice.Push;
 using WbExtensions.Domain.Home;
 
 namespace WbExtensions.Application.Handlers.Notification;

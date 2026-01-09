@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using WbExtensions.Infrastructure.Logging;
 
 namespace WbExtensions.Service;
@@ -10,29 +10,31 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
-        await CreateWebHostBuilder(args)
-            .Build()
-            .RunAsync();
+        var builder = WebApplication.CreateBuilder(args);
+
+        builder.Configuration.Sources.Clear();
+
+        builder.Configuration
+            .AddJsonFile("appsettings.json", false, false)
+            .AddJsonFile("appsettings.local.json", true, false)
+            .AddJsonFile("appsettings.schema.json", true, false)
+            .AddEnvironmentVariables()
+            .Build();
+
+        builder.SetupLogging();
+
+        builder.Host.UseDefaultServiceProvider(serviceProviderOptions =>
+        {
+            serviceProviderOptions.ValidateScopes = true;
+            serviceProviderOptions.ValidateOnBuild = true;
+        });
+
+        var startup = new Startup(builder.Configuration);
+        startup.ConfigureServices(builder.Services);
+
+        var app = builder.Build();
+        startup.Configure(app, app.Environment);
+
+        await app.RunAsync();
     }
-
-    public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-        WebHost.CreateDefaultBuilder(args)
-            .ConfigureAppConfiguration((context, configurationBuilder) =>
-            {
-                configurationBuilder.Sources.Clear();
-
-                configurationBuilder
-                    .AddJsonFile("appsettings.json", false, false)
-                    .AddJsonFile("appsettings.local.json", true, false)
-                    .AddJsonFile("appsettings.schema.json", true, false)
-                    .AddEnvironmentVariables()
-                    .Build();
-            })
-            .SetupLogging()
-            .UseDefaultServiceProvider(serviceProviderOptions =>
-            {
-                serviceProviderOptions.ValidateScopes = true;
-                serviceProviderOptions.ValidateOnBuild = true;
-            })
-            .UseStartup<Startup>();
 }

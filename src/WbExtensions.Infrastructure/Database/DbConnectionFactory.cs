@@ -1,5 +1,5 @@
 ﻿using System.Data;
-using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 
 namespace WbExtensions.Infrastructure.Database;
 
@@ -14,6 +14,6 @@ internal sealed class DbConnectionFactory
 
     public IDbConnection Create()
     {
-        return new SQLiteConnection(_connectionString);
+        return new SqliteConnection(_connectionString);
     }
 }

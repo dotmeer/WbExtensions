@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Data;
-using System.Data.SQLite;
 using System.IO;
 using Dapper;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WbExtensions.Application.Interfaces.Database;
@@ -27,7 +27,7 @@ internal static class InfrastructureDatabaseExtensions
 
         services
             .AddSingleton(databaseSettings)
-            .AddSingleton<IDbConnection, SQLiteConnection>(_ => new SQLiteConnection(connectionString))
+            .AddSingleton<IDbConnection, SqliteConnection>(_ => new SqliteConnection(connectionString))
             .AddSingleton(connectionFactory)
             .AddSingleton<BaseRepository>()
             .AddSingleton<ITelemetryRepository, TelemetryRepository>()
@@ -49,8 +49,13 @@ internal static class InfrastructureDatabaseExtensions
             Directory.CreateDirectory(dbFolder);
         }
         var dbPath = Path.Combine(dbFolder, databaseName);
-        
-        return $"Data Source={dbPath};Pooling=True;Max Pool Size=100;Journal Mode=WAL;";
+
+        return new SqliteConnectionStringBuilder
+            {
+                DataSource = dbPath,
+                Pooling = true
+            }
+            .ToString();
     }
 
     private static void SetupDapper()
