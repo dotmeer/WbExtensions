@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +17,7 @@ internal sealed class VirtualDevicesRepository : IVirtualDevicesRepository, IIni
 {
     private readonly ITelemetryRepository _telemetryRepository;
 
-    private readonly ConcurrentBag<VirtualDevice> _virtualDevices;
+    private readonly ConcurrentDictionary<string, VirtualDevice> _virtualDevices;
     private bool _inited;
     private readonly ManualResetEvent _manualResetEvent;
 
@@ -25,7 +25,7 @@ internal sealed class VirtualDevicesRepository : IVirtualDevicesRepository, IIni
         ITelemetryRepository telemetryRepository)
     {
         _telemetryRepository = telemetryRepository;
-        _virtualDevices = new ConcurrentBag<VirtualDevice>();
+        _virtualDevices = new ConcurrentDictionary<string, VirtualDevice>();
         _manualResetEvent = new ManualResetEvent(false);
     }
 
@@ -36,7 +36,7 @@ internal sealed class VirtualDevicesRepository : IVirtualDevicesRepository, IIni
             throw new SynchronizationLockException("Устройства все еще заблокированы");
         }
 
-        return _virtualDevices;
+        return _virtualDevices.Values.ToList();
     }
 
     public bool TryGetControl(string virtualDeviceName, string virtualControlName, out VirtualDevice? virtualDevice, out Control? control)
@@ -46,10 +46,7 @@ internal sealed class VirtualDevicesRepository : IVirtualDevicesRepository, IIni
             throw new SynchronizationLockException("Устройства все еще заблокированы");
         }
 
-        virtualDevice = _virtualDevices
-            .FirstOrDefault(d => d.VirtualDeviceName == virtualDeviceName
-                                 && d.Controls.Any(c => c.VirtualControlName == virtualControlName));
-
+        virtualDevice = _virtualDevices.TryGetValue(virtualDeviceName, out var device) ? device : null;
         control = virtualDevice?.Controls
             .FirstOrDefault(c => c.VirtualControlName == virtualControlName);
 
@@ -62,11 +59,11 @@ internal sealed class VirtualDevicesRepository : IVirtualDevicesRepository, IIni
 
     public async Task InitAsync(CancellationToken cancellationToken)
     {
-        if(!_inited)
+        if (!_inited)
         {
             var devices = await ReadSchemaAsync(cancellationToken);
             var telemetryValues = await _telemetryRepository.GetAsync(cancellationToken);
-            
+
             foreach (var device in devices!)
             {
                 foreach (var control in device.Controls)
@@ -80,13 +77,12 @@ internal sealed class VirtualDevicesRepository : IVirtualDevicesRepository, IIni
                         control.UpdateValue(telemetry.Value);
                     }
                 }
-                _virtualDevices.Add(device);
+                _virtualDevices.TryAdd(device.VirtualDeviceName, device);
             }
 
             _inited = true;
+            _manualResetEvent.Set();
         }
-
-        _manualResetEvent.Set();
     }
 
     private async Task<IReadOnlyCollection<VirtualDevice>?> ReadSchemaAsync(CancellationToken cancellationToken)
